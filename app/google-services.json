@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "283511049359",
+    "project_id": "mibotiquin-b4c8a",
+    "storage_bucket": "mibotiquin-b4c8a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:283511049359:android:8cb671793a63ffea01b4fa",
+        "android_client_info": {
+          "package_name": "com.example.bottonnavapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDhiYRvxpgiCnuF5TotDf8yEZogzIRSCZo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:283511049359:android:6b850242edc3314801b4fa",
+        "android_client_info": {
+          "package_name": "com.example.mibotiquin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDhiYRvxpgiCnuF5TotDf8yEZogzIRSCZo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

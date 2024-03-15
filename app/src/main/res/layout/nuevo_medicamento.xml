@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/DarkBackgroundColor">
+
+    <EditText
+        android:id="@+id/Nombre"
+        android:layout_width="120dp"
+        android:layout_height="23dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="40dp"
+        android:background="@color/DarkFontColor"
+        android:ems="10"
+        android:inputType="text"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.277"
+        app:layout_constraintStart_toEndOf="@+id/NombreMedicamento"
+        app:layout_constraintTop_toBottomOf="@+id/Usos" />
+
+    <EditText
+        android:id="@+id/Usos"
+        android:layout_width="120dp"
+        android:layout_height="23dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="40dp"
+        android:background="@color/DarkFontColor"
+        android:ems="10"
+        android:inputType="text"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.277"
+        app:layout_constraintStart_toEndOf="@+id/Uso"
+        app:layout_constraintTop_toBottomOf="@+id/Caducidad" />
+
+    <EditText
+        android:id="@+id/Caducidad"
+        android:layout_width="120dp"
+        android:layout_height="23dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="40dp"
+        android:background="@color/DarkFontColor"
+        android:ems="10"
+        android:inputType="datetime|date"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.277"
+        app:layout_constraintStart_toEndOf="@+id/FechaCaducidad"
+        app:layout_constraintTop_toBottomOf="@+id/Receta" />
+
+    <TextView
+        android:id="@+id/NombreMedicamento"
+        android:layout_width="120dp"
+        android:layout_height="23dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="40dp"
+        android:background="@color/DarkBackgroundColor"
+        android:text="Nombre"
+        android:textColor="@color/DarkFontColor"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Uso" />
+
+    <TextView
+        android:id="@+id/FechaCaducidad"
+        android:layout_width="120dp"
+        android:layout_height="23dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="40dp"
+        android:background="@color/DarkBackgroundColor"
+        android:text="Fecha Caducidad"
+        android:textColor="@color/DarkFontColor"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ConReceta" />
+
+    <TextView
+        android:id="@+id/Uso"
+        android:layout_width="120dp"
+        android:layout_height="23dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="40dp"
+        android:background="@color/DarkBackgroundColor"
+        android:text="Uso"
+        android:textColor="@color/DarkFontColor"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/FechaCaducidad" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/logo" />
+
+    <TextView
+        android:id="@+id/CantidadDosis"
+        android:layout_width="120dp"
+        android:layout_height="23dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="30dp"
+        android:background="@color/DarkBackgroundColor"
+        android:text="Cantidad dosis"
+        android:textColor="@color/DarkFontColor"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Nuevo" />
+
+    <TextView
+        android:id="@+id/Nuevo"
+        android:layout_width="201dp"
+        android:layout_height="34dp"
+        android:layout_marginTop="40dp"
+        android:background="@color/DarkBackgroundColor"
+        android:text="Nuevo medicamento"
+        android:textColor="@color/DarkFontColor"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+
+    <TextView
+        android:id="@+id/ConReceta"
+        android:layout_width="120dp"
+        android:layout_height="23dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="40dp"
+        android:background="@color/DarkBackgroundColor"
+        android:text="Con receta"
+        android:textColor="@color/DarkFontColor"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/CantidadDosis" />
+
+    <EditText
+        android:id="@+id/Cantidad"
+        android:layout_width="120dp"
+        android:layout_height="23dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="30dp"
+        android:background="@color/DarkFontColor"
+        android:ems="10"
+        android:inputType="number"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.28"
+        app:layout_constraintStart_toEndOf="@+id/CantidadDosis"
+        app:layout_constraintTop_toBottomOf="@+id/Nuevo" />
+
+    <EditText
+        android:id="@+id/Receta"
+        android:layout_width="120dp"
+        android:layout_height="23dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="40dp"
+        android:background="@color/DarkFontColor"
+        android:ems="10"
+        android:inputType="text"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.277"
+        app:layout_constraintStart_toEndOf="@+id/ConReceta"
+        app:layout_constraintTop_toBottomOf="@+id/Cantidad" />
+
+    <Button
+        android:id="@+id/buttonNuevoMed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:onClick="CrearMedicamento"
+        android:text="Guardar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/NombreMedicamento" />
+</androidx.constraintlayout.widget.ConstraintLayout>
