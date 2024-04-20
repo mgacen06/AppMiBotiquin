@@ -11,15 +11,6 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.example.bottonnavapp.Modelo.Medicamento;
-import com.example.bottonnavapp.ui.home.HomeFragment;
-import com.example.bottonnavapp.ui.home.HomeViewModel;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
@@ -27,7 +18,13 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.example.bottonnavapp.Modelo.Medicamento;
 import com.example.bottonnavapp.databinding.ActivityMainBinding;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -144,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     // Sign in success, update UI with the signed-in user's information
-                    Toast.makeText(getApplicationContext(), "Usuario creado correctamente" + mAuth.getCurrentUser().getEmail().substring(0, mAuth.getCurrentUser().getEmail().indexOf('@')),
+                    Toast.makeText(getApplicationContext(), "Usuario creado correctamente " + mAuth.getCurrentUser().getEmail().substring(0, mAuth.getCurrentUser().getEmail().indexOf('@')),
                             Toast.LENGTH_SHORT).show();
                     FirebaseUser user = mAuth.getCurrentUser();
 
@@ -354,6 +351,8 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("Borrando: " + mAuth.getCurrentUser().getUid());
 
         mAuth.getCurrentUser().delete();
+
+        //Falta borrar los datos asociados en botiquin :)
         setContentView(R.layout.login);
     }
 
