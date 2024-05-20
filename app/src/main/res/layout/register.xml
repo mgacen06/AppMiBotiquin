@@ -6,11 +6,23 @@
     android:layout_height="match_parent"
     android:background="@color/DarkBackgroundColor">
 
+    <TextView
+        android:id="@+id/emailLogin2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="Registro"
+        android:textColor="@color/DarkFontColor"
+        android:textSize="35sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="127dp"
-        android:layout_height="120dp"
-        android:layout_marginTop="50dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="25dp"
         android:contentDescription="@string/logo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -18,22 +30,22 @@
         app:srcCompat="@drawable/logo" />
 
     <TextView
-        android:id="@+id/EmailLogin"
+        android:id="@+id/NombreEditar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:text="@string/Email"
         android:textColor="@color/DarkFontColor"
         android:textSize="25sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toBottomOf="@+id/emailLogin2" />
 
     <TextView
         android:id="@+id/NoCuentaText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="25dp"
         android:text="@string/ya_tienes_cuenta"
         android:textColor="@color/DarkFontColor"
         android:textSize="18sp"
@@ -51,11 +63,12 @@
         android:textSize="25sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Email" />
+        app:layout_constraintTop_toBottomOf="@+id/NombreUpdateProfile" />
 
     <EditText
         android:id="@+id/Password"
         style="@style/CampoTexto"
+        android:layout_marginTop="10dp"
         android:ems="10"
         android:hint="@string/contrase_a"
         android:importantForAutofill="no"
@@ -68,6 +81,7 @@
     <EditText
         android:id="@+id/RepetirPassword"
         style="@style/CampoTexto"
+        android:layout_marginTop="15dp"
         android:ems="10"
         android:hint="@string/Repetir_contrase_a"
         android:importantForAutofill="no"
@@ -78,21 +92,22 @@
         app:layout_constraintTop_toBottomOf="@+id/Password" />
 
     <EditText
-        android:id="@+id/Email"
+        android:id="@+id/NombreUpdateProfile"
         style="@style/CampoTexto"
+        android:layout_marginTop="10dp"
         android:autofillHints=""
         android:ems="10"
         android:inputType="text|textEmailAddress"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/EmailLogin" />
+        app:layout_constraintTop_toBottomOf="@+id/NombreEditar" />
 
     <Button
         android:id="@+id/Registro"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="10dp"
         android:onClick="cambiarALogin"
         android:text="@string/inciar_sesion"
         app:layout_constraintEnd_toEndOf="parent"
@@ -104,7 +119,7 @@
         android:id="@+id/Register"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:onClick="Registrarse"
         android:text="@string/registrarse"
         app:layout_constraintEnd_toEndOf="parent"

@@ -18,5 +18,7 @@
     <string name="compra">compra</string>
     <string name="estetoscopio">Consejo</string>
     <string name="medicamento">Mi botiquin</string>
+    <string name="nuevo_medicamento">Nuevo medicamento</string>
+    <string name="editarperfil">EditarPerfil</string>
 
 </resources>

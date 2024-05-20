@@ -6,12 +6,14 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -42,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth;
+
     private ActivityMainBinding binding;
 
     private ArrayList<Medicamento> listamedicamentos = new ArrayList<Medicamento>();
@@ -50,13 +53,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-
         //mio
         setContentView(R.layout.login);
+
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
+        mAuth.signOut();
         onStart();
 
         /*
@@ -84,30 +86,31 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     @Override
     public void onStart() {
         super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
+        //Verifica si el usuario ha iniciado sesion y actualiza la UI de acuerdo a ello
         FirebaseUser currentUser = mAuth.getCurrentUser();
+        System.out.println("User: " +currentUser);
         if(currentUser != null){
             //Si no es null ve a la pantalla principal directamente
+            System.out.println("Peto por aqui, soy el user: " + currentUser.getUid());
+            setContentView(R.layout.activity_main);
         } else{
+            cambiarALogin(getCurrentFocus());
+            //setContentView(R.layout.login);
             Toast.makeText(getApplicationContext(), "Inicie Sesion", Toast.LENGTH_SHORT).show();
-
         }
     }
 
-    public void cambiarARegistro(View view){
-        setContentView(R.layout.register);
-    }
+    public void cambiarARegistro(View view){setContentView(R.layout.register);}
 
     public void cambiarALogin(View view){
         setContentView(R.layout.login);
     }
 
     public void Registrarse(View view){
-        EditText Email = findViewById(R.id.Email);
+        EditText Email = findViewById(R.id.NombreUpdateProfile);
         EditText Contrasenia = findViewById(R.id.Password);
         EditText RepetirContrasenia = findViewById(R.id.RepetirPassword);
 
@@ -189,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void IniciarSesion(View view){
-        EditText Email = findViewById(R.id.Email);
+        EditText Email = findViewById(R.id.NombreUpdateProfile);
         EditText Contrasenia = findViewById(R.id.Password);
 
         if(Email.getText().toString().isEmpty()){
@@ -297,7 +300,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void CrearMedicamento(View view){
-        System.out.println("Creando");
+        System.out.println("Creando medicamento");
 
         EditText Cantidad = findViewById(R.id.Cantidad);
         EditText Receta = findViewById(R.id.Receta);
@@ -343,13 +346,18 @@ public class MainActivity extends AppCompatActivity {
     public void CerrarSesion(View view){
         System.out.println("Cerrando: " + mAuth.getCurrentUser().getUid());
         mAuth.signOut();
-        //setContentView(null);
-        setContentView(R.layout.login);
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        System.out.println("User cerrado: " +currentUser);        //setContentView(null);
+        //Con finish(); puedo hacer que se cierre sesión
+        //finish();
+        //setContentView(R.layout.login);
+
+
+        onStart();
     }
 
     public void BorrarUsuario(View view){
         System.out.println("Borrando: " + mAuth.getCurrentUser().getUid());
-
         mAuth.getCurrentUser().delete();
 
         //Falta borrar los datos asociados en botiquin :)
@@ -359,7 +367,56 @@ public class MainActivity extends AppCompatActivity {
     public void EditarPerfil(View view){
         System.out.println("Editando: " + mAuth.getCurrentUser().getUid());
 
-
         setContentView(R.layout.editar_perfil);
+        EditText editTextNombre = findViewById(R.id.NombreUpdateProfile);
+        EditText editTextPhone = findViewById(R.id.TelefonoUpdateProfile);
+
+        //Actualizar el sethint para que recoga los datos de firestore database
+        //editTextNombre.setHint(mAuth.getCurrentUser().getDisplayName());
+        //editTextPhone.setHint(mAuth.getCurrentUser().getPhoneNumber());
+        //mAuth.updateCurrentUser()
+
+    }
+
+    public void GuardarPerfil(View view){
+
+        if(db.collection("DatosUser").toString().contains(mAuth.getCurrentUser().getUid())){
+            //Actualizar datos en firestore
+        }else{
+            System.out.println("Nuevos datos de perfil");
+
+            EditText Phone = findViewById(R.id.TelefonoUpdateProfile);
+            EditText Nombre = findViewById(R.id.NombreUpdateProfile);
+            String IdUsuario= mAuth.getCurrentUser().getUid();
+
+            Map<String, Object> usuario = new HashMap<>();
+
+            usuario.put("Nombre", Nombre.getText().toString());
+            usuario.put("Telefono", Phone.getText().toString());
+            usuario.put("IdUsuario", IdUsuario);
+
+            db.collection("DatosUser").add(usuario)
+                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                        @Override
+                        public void onSuccess(DocumentReference documentReference) {
+                            Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
+                            System.out.println("Se han actualizado los datos del perfil");
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w(TAG, "Error adding document", e);
+                            System.out.println("Ha fallado la creacion");
+                        }
+                    });
+
+            setContentView(binding.getRoot());
+        }
+
+
+    }
+    public void Cancelar(View view){
+        setContentView(R.layout.activity_main);
     }
     }
