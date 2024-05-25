@@ -13,32 +13,30 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:onClick="CerrarSesion"
-        android:text="Cerrar Sesion"
+        android:text="@string/cerrar_sesion"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageButton" />
+        app:layout_constraintTop_toBottomOf="@+id/EditarPerfil" />
 
     <Button
         android:id="@+id/EditarPerfil"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="30dp"
         android:onClick="EditarPerfil"
-        android:text="Editar perfil"
+        android:text="@string/editar_perfil"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Borrar" />
+        app:layout_constraintTop_toBottomOf="@+id/imageButton" />
 
     <Button
         android:id="@+id/Borrar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="30dp"
         android:onClick="BorrarUsuario"
-        android:text="Borrar Usuario"
+        android:text="@string/borrar_usuario"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/Cerrar" />
 
