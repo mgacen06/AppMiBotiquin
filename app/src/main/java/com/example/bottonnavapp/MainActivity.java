@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
     public static boolean contraseniaValida(String password) {
         // Funcion REGEX que exige que tiene que tener minimo 8 caracteres y máximo 24,
         // tiene que incluir Mayusuculas, minusculas, numeros y algun caracter especial
-        String patron = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,24}$";
+        String patron = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&+/_-])[A-Za-z\\d@$!%*?&+/_-]{8,24}$";
 
         // Comprobar si la contraseña coincide con la expresión regular y no contiene espacios
         return password != null && password.matches(patron) && !password.contains(" ");
@@ -140,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Registrando usuario...", Toast.LENGTH_SHORT).show();
                 register(Email.getText().toString(), Contrasenia.getText().toString(), MainActivity.this);
             } else {
-                Toast.makeText(this, "Contraseña inválida. Debe tener entre 8 y 24 caracteres, incluir mayúsculas, minúsculas, números y caracteres especiales, y no contener espacios.", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Longitud (8, 24), MAYUS, MINUS, números y  simbolos @$!%*?&+/_-", Toast.LENGTH_LONG).show();
             }
         } else {
             Toast.makeText(this, "Email inválido. Por favor, introduce un email válido.", Toast.LENGTH_SHORT).show();
@@ -153,12 +153,33 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    // Sign in success, update UI with the signed-in user's information
+                    // Login exitoso, proceso a crear un perfil con información extra del usuario
                     Toast.makeText(getApplicationContext(), "Usuario creado correctamente " + Objects.requireNonNull(Objects.requireNonNull(mAuth.getCurrentUser()).getEmail()).substring(0, mAuth.getCurrentUser().getEmail().indexOf('@')),
                             Toast.LENGTH_SHORT).show();
+
+                    String IdUsuario= Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
+                    String Nombre = Objects.requireNonNull(Objects.requireNonNull(mAuth.getCurrentUser()).getEmail()).substring(0, mAuth.getCurrentUser().getEmail().indexOf('@'));
+
+                    //Hago esto para que al guardar dtos del Perfil ponga la primera letra en mayusculas
+                    String NombreMandar = Nombre.substring(0, 1).toUpperCase() + Nombre.substring(1);
+
+                        final Map<String, Object> perfil = new HashMap<>();
+                        perfil.put("IdUsuario", IdUsuario);
+                        perfil.put("Nombre", NombreMandar);
+                        perfil.put("Telefono", "");
+
+                    //Guardo en la coleccion de DatosUser la informacion del perfil del usuario
+                    db.collection("DatosUser").document(IdUsuario).set(perfil)
+                            .addOnSuccessListener(aVoid -> {
+                                Log.d(TAG, "Documento creado con éxito.");
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.w(TAG, "Error al crear el documento", e);
+                            });
+
                     setContentView(R.layout.login);
                 } else {
-                    // If sign in fails, display a message to the user.
+                    // Si falla envia un mensaje al usuario
                     Log.w(TAG, "createUserWithEmail:failure", task.getException());
                     Toast.makeText(getApplicationContext(), "Este correo ya ha sido registrado", Toast.LENGTH_SHORT).show();
                     updateUI(null);
@@ -420,6 +441,7 @@ public class MainActivity extends AppCompatActivity {
                             String IdUsuario = document.getString("IdUsuario");
 
                             assert IdUsuario != null;
+                            assert user != null;
                             if(IdUsuario.equals(user.getUid())){
                                 String Nombre = document.getString("Nombre");
                                 String Telefono = document.getString("Telefono");
@@ -467,6 +489,7 @@ public class MainActivity extends AppCompatActivity {
             perfil.put("IdUsuario", IdUsuario);
             perfil.put("Nombre", NombreUser);
             perfil.put("Telefono", PhoneUser);
+
             // Verificar si el documento ya existe
             db.collection("DatosUser").document(IdUsuario).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
