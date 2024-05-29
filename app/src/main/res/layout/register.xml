@@ -51,10 +51,10 @@
         android:textSize="25sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/NombreUpdateProfile" />
+        app:layout_constraintTop_toBottomOf="@+id/EmailRegister" />
 
     <EditText
-        android:id="@+id/Password"
+        android:id="@+id/PasswordRegister"
         style="@style/CampoTexto"
         android:layout_marginTop="10dp"
         android:ems="10"
@@ -78,11 +78,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Password"
+        app:layout_constraintTop_toBottomOf="@+id/PasswordRegister"
         tools:ignore="TouchTargetSizeCheck" />
 
     <EditText
-        android:id="@+id/NombreUpdateProfile"
+        android:id="@+id/EmailRegister"
         style="@style/CampoTexto"
         android:layout_marginTop="10dp"
         android:autofillHints=""

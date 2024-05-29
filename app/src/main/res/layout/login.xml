@@ -21,24 +21,12 @@
         android:id="@+id/NombreEditar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="35dp"
         android:text="@string/Email"
         android:textColor="@color/DarkFontColor"
         android:textSize="25sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/emailLogin" />
-
-    <TextView
-        android:id="@+id/emailLogin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:text="Login"
-        android:textColor="@color/DarkFontColor"
-        android:textSize="35sp"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
@@ -64,10 +52,10 @@
         android:textSize="25sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/NombreUpdateProfile" />
+        app:layout_constraintTop_toBottomOf="@+id/EmailLogin" />
 
     <EditText
-        android:id="@+id/Password"
+        android:id="@+id/PasswordLogin"
         style="@style/CampoTexto"
         android:layout_marginTop="10dp"
         android:ems="10"
@@ -75,9 +63,9 @@
         android:importantForAutofill="no"
         android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.499"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Contraseña" />
+        app:layout_constraintTop_toBottomOf="@+id/Contraseña"
+        tools:ignore="TouchTargetSizeCheck" />
 
     <!-- android:layout_width="150dp"
         android:layout_height="24dp"
@@ -85,16 +73,17 @@
         android:background="@color/DarkFontColor"-->
 
     <EditText
-        android:id="@+id/NombreUpdateProfile"
+        android:id="@+id/EmailLogin"
         style="@style/CampoTexto"
         android:layout_marginTop="10dp"
-        android:autofillHints=""
         android:ems="10"
         android:hint="@string/Email"
-        android:inputType="text"
+        android:importantForAutofill="no"
+        android:inputType="text|textWebEmailAddress"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/NombreEditar" />
+        app:layout_constraintTop_toBottomOf="@+id/NombreEditar"
+        tools:ignore="TouchTargetSizeCheck" />
 
     <Button
         android:id="@+id/Login"
@@ -105,7 +94,7 @@
         android:text="@string/inciar_sesion"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Password" />
+        app:layout_constraintTop_toBottomOf="@+id/PasswordLogin" />
 
     <Button
         android:id="@+id/Registro"

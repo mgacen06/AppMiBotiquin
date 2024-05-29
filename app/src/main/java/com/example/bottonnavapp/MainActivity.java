@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -49,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
 
     private ArrayList<Medicamento> listamedicamentos = new ArrayList<Medicamento>();
+
     private ListView lvDatos;
 
     @Override
@@ -112,32 +112,40 @@ public class MainActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setTitle("Login");
     }
 
+    public static boolean emailValido(String email) {
+        //Función REGEX que exige que haya texto antes de la @, que haya @,
+        // que haya texto despues de la arroba y que despues del punto haya 2 o 3 letras
+        String patron = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,3}$";
+        return email != null && email.matches(patron);
+    }
+
+    public static boolean contraseniaValida(String password) {
+        // Funcion REGEX que exige que tiene que tener minimo 8 caracteres y máximo 24,
+        // tiene que incluir Mayusuculas, minusculas, numeros y algun caracter especial
+        String patron = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,24}$";
+
+        // Comprobar si la contraseña coincide con la expresión regular y no contiene espacios
+        return password != null && password.matches(patron) && !password.contains(" ");
+    }
+
     public void Registrarse(View view){
-        EditText Email = findViewById(R.id.NombreUpdateProfile);
-        EditText Contrasenia = findViewById(R.id.Password);
+        EditText Email = findViewById(R.id.EmailRegister);
+        EditText Contrasenia = findViewById(R.id.PasswordRegister);
         EditText RepetirContrasenia = findViewById(R.id.RepetirPassword);
 
-        if (Email.getText().toString().contains("@") && !Email.getText().toString().substring(Email.getText().toString().indexOf('@') + 1).contains("@")) {
-            if (Email.getText().toString().contains(".") && !Email.getText().toString().substring(Email.getText().toString().indexOf('.') + 1).contains(".")) {
-                if (Email.getText().toString().contains("@gmail.com")) { //&& Email.getText().toString().substring(Email.getText().toString().indexOf("@gmail.com") + 1).isEmpty()
-                    if (Contrasenia.length() > 5) {
-                        if (Contrasenia.getText().toString().equals(RepetirContrasenia.getText().toString())) {
-                            register(Email.getText().toString(), Contrasenia.getText().toString(), MainActivity.this);
-                        } else {
-                            Toast.makeText(getApplicationContext(), "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show();
-                        }
-                    } else {
-                        Toast.makeText(getApplicationContext(), "La contraseña debe tener al menos 6 caracteres", Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    Toast.makeText(getApplicationContext(), "El email debe terminar en '@gmail.com'", Toast.LENGTH_SHORT).show();
-                }
+        if (emailValido(Email.getText().toString().trim())) {
+            //Si el email es valido comprueba la contraseña
+            if (contraseniaValida(Contrasenia.getText().toString().trim()) && Contrasenia.getText().toString().trim().equals(RepetirContrasenia.getText().toString().trim())) {
+                //Si la contraseña es valida y coincide con la repeticion pasamos a registrar
+                Toast.makeText(this, "Registrando usuario...", Toast.LENGTH_SHORT).show();
+                register(Email.getText().toString(), Contrasenia.getText().toString(), MainActivity.this);
             } else {
-                Toast.makeText(getApplicationContext(), "El email debe tener un '.'", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Contraseña inválida. Debe tener entre 8 y 24 caracteres, incluir mayúsculas, minúsculas, números y caracteres especiales, y no contener espacios.", Toast.LENGTH_LONG).show();
             }
         } else {
-            Toast.makeText(getApplicationContext(), "El email debe tener una '@'", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Email inválido. Por favor, introduce un email válido.", Toast.LENGTH_SHORT).show();
         }
+
     }
 
     private void register(String email, String password, Activity activity) {
@@ -148,39 +156,6 @@ public class MainActivity extends AppCompatActivity {
                     // Sign in success, update UI with the signed-in user's information
                     Toast.makeText(getApplicationContext(), "Usuario creado correctamente " + Objects.requireNonNull(Objects.requireNonNull(mAuth.getCurrentUser()).getEmail()).substring(0, mAuth.getCurrentUser().getEmail().indexOf('@')),
                             Toast.LENGTH_SHORT).show();
-
-                    /*
-                    //Crear lista de medicamentos asociada
-                    //Consigo el id asociado para crear el documento de botiquin
-                    String uid= mAuth.getCurrentUser().getUid();
-                    Map<String, Object> botiquin = new HashMap<>();
-                    botiquin.put("CantidadDosis", "");
-                    botiquin.put("DosisTiempo", "");
-                    botiquin.put("FechaCaducidad", "");
-                    botiquin.put("NombreMedicamento", "");
-                    botiquin.put("Uso", "");
-                    botiquin.put("ConReceta", "");
-                    botiquin.put("IdUsuario", uid);
-
-                    // Add a new document with a generated ID
-                    db.collection("Botiquin").add(botiquin)
-                            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                @Override
-                                public void onSuccess(DocumentReference documentReference) {
-                                    Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
-                                    System.out.println("Se ha creado un botiquin");
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.w(TAG, "Error adding document", e);
-                                    System.out.println("Ha fallado la creacion");
-                                }
-                            });
-                     */
-
-
                     setContentView(R.layout.login);
                 } else {
                     // If sign in fails, display a message to the user.
@@ -193,8 +168,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void IniciarSesion(View view){
-        EditText Email = findViewById(R.id.NombreUpdateProfile);
-        EditText Contrasenia = findViewById(R.id.Password);
+        EditText Email = findViewById(R.id.EmailLogin);
+        EditText Contrasenia = findViewById(R.id.PasswordLogin);
 
         if(Email.getText().toString().isEmpty()){
             Toast.makeText(getApplicationContext(), "Completa el correo", Toast.LENGTH_SHORT).show();
@@ -203,7 +178,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             signIn(Email.getText().toString(), Contrasenia.getText().toString());
         }
-
     }
 
     private void signIn(String email, String password) {
@@ -259,7 +233,7 @@ public class MainActivity extends AppCompatActivity {
 
                             updateUI(user);
                         } else {
-                            // If sign in fails, display a message to the user.
+                            // Si el Login falla manda un mensaje al usuario.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
                             Toast.makeText(getApplicationContext(), "Datos incorrectos", Toast.LENGTH_SHORT).show();
 
@@ -432,6 +406,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void EditarPerfil(View view){
+
         CollectionReference collectionRef = db.collection("DatosUser");
         FirebaseUser user = mAuth.getCurrentUser();
         setContentView(R.layout.editar_perfil);
@@ -449,7 +424,7 @@ public class MainActivity extends AppCompatActivity {
                                 String Nombre = document.getString("Nombre");
                                 String Telefono = document.getString("Telefono");
 
-                                EditText editTextNombre = findViewById(R.id.NombreUpdateProfile);
+                                EditText editTextNombre = findViewById(R.id.EmailRegister);
                                 EditText editTextPhone = findViewById(R.id.TelefonoUpdateProfile);
 
                                 editTextNombre.setHint(Nombre);
@@ -469,52 +444,69 @@ public class MainActivity extends AppCompatActivity {
     public void GuardarPerfil(View view){
 
         EditText Phone = findViewById(R.id.TelefonoUpdateProfile);
-        EditText Nombre = findViewById(R.id.NombreUpdateProfile);
+        EditText Nombre = findViewById(R.id.EmailRegister);
         String IdUsuario= Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
+        String NombreUser;
+        String PhoneUser;
 
-        final Map<String, Object> perfil = new HashMap<>();
-        perfil.put("IdUsuario", IdUsuario);
-        perfil.put("Nombre", Nombre.getText().toString());
-        perfil.put("Telefono", Phone.getText().toString());
-
-        // Verificar si el documento ya existe
-        db.collection("DatosUser").document(IdUsuario).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        // El documento existe, actualizarlo
-                        db.collection("DatosUser").document(IdUsuario).update(perfil)
-                                .addOnSuccessListener(aVoid -> {
-                                    Log.d(TAG, "Documento actualizado con éxito.");
-                                    Toast.makeText(view.getContext(), "Perfil actualizado", Toast.LENGTH_SHORT).show();
-                                })
-                                .addOnFailureListener(e -> {
-                                    Log.w(TAG, "Error al actualizar el documento", e);
-                                    Toast.makeText(view.getContext(), "Error al actualizar perfil", Toast.LENGTH_SHORT).show();
-                                });
-                    } else {
-                        // El documento no existe, crearlo
-                        db.collection("DatosUser").document(IdUsuario).set(perfil)
-                                .addOnSuccessListener(aVoid -> {
-                                    Log.d(TAG, "Documento creado con éxito.");
-                                    Toast.makeText(view.getContext(), "Perfil creado", Toast.LENGTH_SHORT).show();
-                                })
-                                .addOnFailureListener(e -> {
-                                    Log.w(TAG, "Error al crear el documento", e);
-                                    Toast.makeText(view.getContext(), "Error al crear perfil", Toast.LENGTH_SHORT).show();
-                                });
-                    }
-                } else {
-                    Log.d(TAG, "Error al obtener el documento: ", task.getException());
-                    Toast.makeText(view.getContext(), "Error al verificar perfil", Toast.LENGTH_SHORT).show();
-                }
+        if (Phone.getText().toString().isEmpty() && Nombre.getText().toString().isEmpty()){
+            Toast.makeText(view.getContext(), "Los campos están vacíos", Toast.LENGTH_SHORT).show();
+        } else{
+            if (Phone.getText().toString().isEmpty()){
+                NombreUser = Nombre.getText().toString();
+                PhoneUser = Phone.getHint().toString();
+            } else if (Nombre.getText().toString().isEmpty()){
+                NombreUser = Nombre.getHint().toString();
+                PhoneUser = Phone.getText().toString();
+            } else {
+                NombreUser = Nombre.getText().toString();
+                PhoneUser = Phone.getText().toString();
             }
-        });
 
-        setContentView(binding.getRoot());
+            final Map<String, Object> perfil = new HashMap<>();
+            perfil.put("IdUsuario", IdUsuario);
+            perfil.put("Nombre", NombreUser);
+            perfil.put("Telefono", PhoneUser);
+            // Verificar si el documento ya existe
+            db.collection("DatosUser").document(IdUsuario).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            // El documento existe, actualizarlo
+                            db.collection("DatosUser").document(IdUsuario).update(perfil)
+                                    .addOnSuccessListener(aVoid -> {
+                                        Log.d(TAG, "Documento actualizado con éxito.");
+                                        Toast.makeText(view.getContext(), "Perfil actualizado", Toast.LENGTH_SHORT).show();
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Log.w(TAG, "Error al actualizar el documento", e);
+                                        Toast.makeText(view.getContext(), "Error al actualizar perfil", Toast.LENGTH_SHORT).show();
+                                    });
+                        } else {
+                            // El documento no existe, crearlo
+                            db.collection("DatosUser").document(IdUsuario).set(perfil)
+                                    .addOnSuccessListener(aVoid -> {
+                                        Log.d(TAG, "Documento creado con éxito.");
+                                        Toast.makeText(view.getContext(), "Perfil creado", Toast.LENGTH_SHORT).show();
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Log.w(TAG, "Error al crear el documento", e);
+                                        Toast.makeText(view.getContext(), "Error al crear perfil", Toast.LENGTH_SHORT).show();
+                                    });
+                        }
+                    } else {
+                        Log.d(TAG, "Error al obtener el documento: ", task.getException());
+                        Toast.makeText(view.getContext(), "Error al verificar perfil", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
+            setContentView(binding.getRoot());
+        }
     }
+
     public void Cancelar(View view){
         setContentView(binding.getRoot());
     }

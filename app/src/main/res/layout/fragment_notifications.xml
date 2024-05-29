@@ -44,12 +44,13 @@
         android:id="@+id/imageButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="25dp"
         android:backgroundTint="@color/DarkBackgroundColor"
+        android:contentDescription="@string/editarperfil"
+        android:foregroundTint="#FFFFFF"
         android:src="@drawable/profile_perfil"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="@string/editarperfil" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
