@@ -26,5 +26,8 @@
     <string name="cancelar">Cancelar</string>
     <string name="telefono">Telefono</string>
     <string name="guardar">Guardar</string>
+    <string name="escribe_un_mensaje">Escribe un mensaje</string>
+    <string name="enviar">Enviar</string>
+    <string name="MiBotiquin" />
 
 </resources>

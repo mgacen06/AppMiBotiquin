@@ -102,6 +102,50 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void updateUI(FirebaseUser user) {
+        if (user != null) {
+            // Actualiza la interfaz de usuario con la información del usuario
+            //setContentView(R.layout.activity_main);
+
+            //nuevo
+            binding = ActivityMainBinding.inflate(getLayoutInflater());
+            setContentView(binding.getRoot());
+            //BottomNavigationView navView = findViewById(R.id.nav_view);
+            // Passing each menu ID as a set of Ids because each
+            // menu should be considered as top level destinations.
+            AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
+                    R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications)
+                    .build();
+            NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
+            NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+            NavigationUI.setupWithNavController(binding.navView, navController);
+
+
+            //prueba
+            lvDatos = (ListView) findViewById(R.id.lvDatos);
+            ArrayAdapter<Medicamento> adapter = new ArrayAdapter<Medicamento>(MainActivity.this, android.R.layout.simple_list_item_1, listamedicamentos);
+            lvDatos.setAdapter(adapter);
+
+            System.out.println("datos:" + lvDatos.toString());
+        }
+    }
+
+    public void CerrarSesion(View view){
+        System.out.println("Cerrando: " + Objects.requireNonNull(mAuth.getCurrentUser()).getUid());
+        mAuth.signOut();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        System.out.println("User cerrado: " +currentUser);        //setContentView(null);
+        //Con finish(); puedo hacer que se cierre sesión
+        //finish();
+        //setContentView(R.layout.login);
+
+
+        onStart();
+    }
+
+    /**
+     * CAMBIOS DE VISTAS
+     * */
     public void cambiarARegistro(View view){
         setContentView(R.layout.register);
         Objects.requireNonNull(getSupportActionBar()).setTitle("Registro");
@@ -112,22 +156,67 @@ public class MainActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setTitle("Login");
     }
 
-    public static boolean emailValido(String email) {
-        //Función REGEX que exige que haya texto antes de la @, que haya @,
-        // que haya texto despues de la arroba y que despues del punto haya 2 o 3 letras
-        String patron = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,3}$";
-        return email != null && email.matches(patron);
+    public void CambiarANuevoMedicamento(View view){setContentView(R.layout.nuevo_medicamento);}
+
+    public void Cancelar(View view){
+        setContentView(binding.getRoot());
     }
 
-    public static boolean contraseniaValida(String password) {
-        // Funcion REGEX que exige que tiene que tener minimo 8 caracteres y máximo 24,
-        // tiene que incluir Mayusuculas, minusculas, numeros y algun caracter especial
-        String patron = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&+/_-])[A-Za-z\\d@$!%*?&+/_-]{8,24}$";
+    /**
+     * CONSEJOS CON CHATGPT
+     * */
 
-        // Comprobar si la contraseña coincide con la expresión regular y no contiene espacios
-        return password != null && password.matches(patron) && !password.contains(" ");
+
+
+
+    /**
+     * CRUD DE MEDICAMENTO
+     * */
+    //CREATE
+    public void CrearMedicamento(View view){
+        System.out.println("Creando medicamento");
+
+        EditText Cantidad = findViewById(R.id.Cantidad);
+        EditText Receta = findViewById(R.id.Receta);
+        EditText Caducidad = findViewById(R.id.Caducidad);
+        EditText Uso = findViewById(R.id.Usos);
+        EditText Nombre = findViewById(R.id.Nombre);
+
+        //Consigo el id asociado para crear el documento de botiquin
+        String IdUsuario= Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
+        Map<String, Object> botiquin = new HashMap<>();
+        botiquin.put("CantidadDosis", Cantidad.getText().toString());
+        botiquin.put("FechaCaducidad", Caducidad.getText().toString());
+        botiquin.put("NombreMedicamento", Nombre.getText().toString());
+        botiquin.put("Uso", Uso.getText().toString());
+        botiquin.put("ConReceta", Receta.getText().toString());
+        botiquin.put("IdUsuario", IdUsuario);
+
+        // Add a new document with a generated ID
+        db.collection("Botiquin").add(botiquin)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
+                        System.out.println("Se ha creado un botiquin");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error adding document", e);
+                        System.out.println("Ha fallado la creacion");
+                    }
+                });
+
+        setContentView(binding.getRoot());
+        Toast.makeText(view.getContext(), "Nuevo Medicamento creado", Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * CRUD DE USUARIO
+     * */
+    //CREATE
     public void Registrarse(View view){
         EditText Email = findViewById(R.id.EmailRegister);
         EditText Contrasenia = findViewById(R.id.PasswordRegister);
@@ -163,10 +252,10 @@ public class MainActivity extends AppCompatActivity {
                     //Hago esto para que al guardar dtos del Perfil ponga la primera letra en mayusculas
                     String NombreMandar = Nombre.substring(0, 1).toUpperCase() + Nombre.substring(1);
 
-                        final Map<String, Object> perfil = new HashMap<>();
-                        perfil.put("IdUsuario", IdUsuario);
-                        perfil.put("Nombre", NombreMandar);
-                        perfil.put("Telefono", "");
+                    final Map<String, Object> perfil = new HashMap<>();
+                    perfil.put("IdUsuario", IdUsuario);
+                    perfil.put("Nombre", NombreMandar);
+                    perfil.put("Telefono", "");
 
                     //Guardo en la coleccion de DatosUser la informacion del perfil del usuario
                     db.collection("DatosUser").document(IdUsuario).set(perfil)
@@ -188,6 +277,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    //READ
     public void IniciarSesion(View view){
         EditText Email = findViewById(R.id.EmailLogin);
         EditText Contrasenia = findViewById(R.id.PasswordLogin);
@@ -264,168 +354,7 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-    private void updateUI(FirebaseUser user) {
-        if (user != null) {
-            // Actualiza la interfaz de usuario con la información del usuario
-            //setContentView(R.layout.activity_main);
-
-            //nuevo
-            binding = ActivityMainBinding.inflate(getLayoutInflater());
-            setContentView(binding.getRoot());
-            //BottomNavigationView navView = findViewById(R.id.nav_view);
-            // Passing each menu ID as a set of Ids because each
-            // menu should be considered as top level destinations.
-            AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                    R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications)
-                    .build();
-            NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
-            NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-            NavigationUI.setupWithNavController(binding.navView, navController);
-
-
-            //prueba
-            lvDatos = (ListView) findViewById(R.id.lvDatos);
-            ArrayAdapter<Medicamento> adapter = new ArrayAdapter<Medicamento>(MainActivity.this, android.R.layout.simple_list_item_1, listamedicamentos);
-            lvDatos.setAdapter(adapter);
-
-            System.out.println("datos:" + lvDatos.toString());
-        }
-    }
-
-    public void NuevoMedicamento(View view){
-        System.out.println("Nuevo medicamento");
-        setContentView(R.layout.nuevo_medicamento);
-        //Toast.makeText(view.getContext(), "Nuevo Medicamento", Toast.LENGTH_SHORT);
-    }
-
-    public void CrearMedicamento(View view){
-        System.out.println("Creando medicamento");
-
-        EditText Cantidad = findViewById(R.id.Cantidad);
-        EditText Receta = findViewById(R.id.Receta);
-        EditText Caducidad = findViewById(R.id.Caducidad);
-        EditText Uso = findViewById(R.id.Usos);
-        EditText Nombre = findViewById(R.id.Nombre);
-
-                    //Consigo el id asociado para crear el documento de botiquin
-                    String IdUsuario= Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
-                    Map<String, Object> botiquin = new HashMap<>();
-                    botiquin.put("CantidadDosis", Cantidad.getText().toString());
-                    botiquin.put("FechaCaducidad", Caducidad.getText().toString());
-                    botiquin.put("NombreMedicamento", Nombre.getText().toString());
-                    botiquin.put("Uso", Uso.getText().toString());
-                    botiquin.put("ConReceta", Receta.getText().toString());
-                    botiquin.put("IdUsuario", IdUsuario);
-
-                    // Add a new document with a generated ID
-                    db.collection("Botiquin").add(botiquin)
-                            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                @Override
-                                public void onSuccess(DocumentReference documentReference) {
-                                    Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
-                                    System.out.println("Se ha creado un botiquin");
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.w(TAG, "Error adding document", e);
-                                    System.out.println("Ha fallado la creacion");
-                                }
-                            });
-
-        setContentView(binding.getRoot());
-        Toast.makeText(view.getContext(), "Nuevo Medicamento creado", Toast.LENGTH_SHORT).show();
-    }
-
-    public void CerrarSesion(View view){
-        System.out.println("Cerrando: " + Objects.requireNonNull(mAuth.getCurrentUser()).getUid());
-        mAuth.signOut();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        System.out.println("User cerrado: " +currentUser);        //setContentView(null);
-        //Con finish(); puedo hacer que se cierre sesión
-        //finish();
-        //setContentView(R.layout.login);
-
-
-        onStart();
-    }
-
-    public void BorrarUsuario(View view){
-
-        new AlertDialog.Builder(this)
-                .setTitle("Borrar cuenta")
-                .setMessage("¿Estás seguro de que quieres borrar tu cuenta?")
-                .setPositiveButton("Sí", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        borrarUsuario();
-                    }
-                })
-                .setNegativeButton("No", null)
-                .show();
-    }
-
-    private void borrarUsuario() {
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user != null) {
-            String userId = user.getUid();
-
-            // Borrar datos de Firestore Database en la colección "DatosUser"
-            db.collection("DatosUser").document(userId).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if (task.isSuccessful()) {
-                        Log.d(TAG, "Datos de usuario eliminados de Firestore Database");
-
-                        // Borrar documentos en la colección "Medicamentos" donde el campo "userId" coincide
-                        db.collection("Botiquin").whereEqualTo("IdUsuario", userId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                if (task.isSuccessful() && task.getResult() != null) {
-                                    for (DocumentSnapshot document : task.getResult().getDocuments()) {
-                                        db.collection("Botiquin").document(document.getId()).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                if (task.isSuccessful()) {
-                                                    Log.d(TAG, "Documento de Botiquin eliminado.");
-                                                } else {
-                                                    Log.w(TAG, "Error al eliminar el documento de Botiquin.", task.getException());
-                                                }
-                                            }
-                                        });
-                                    }
-                                } else {
-                                    Log.w(TAG, "Error al obtener los documentos de Botiquin.", task.getException());
-                                }
-
-                                // Borrar cuenta de usuario en Firebase Authentication
-                                user.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        if (task.isSuccessful()) {
-                                            Log.d(TAG, "Cuenta de usuario eliminada.");
-                                            Toast.makeText(MainActivity.this, "Cuenta eliminada.", Toast.LENGTH_SHORT).show();
-                                            // Opcional: Redirigir al usuario a la pantalla de inicio de sesión
-                                        } else {
-                                            Log.w(TAG, "Error al eliminar la cuenta de usuario.", task.getException());
-                                            Toast.makeText(MainActivity.this, "Error al eliminar la cuenta.", Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                });
-                            }
-                        });
-                    } else {
-                        Log.w(TAG, "Error al eliminar los datos de usuario de Firestore Database.", task.getException());
-                        Toast.makeText(MainActivity.this, "Error al eliminar los datos de usuario.", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
-            onStart();
-        } else {
-            Toast.makeText(MainActivity.this, "No se ha encontrado", Toast.LENGTH_SHORT).show();
-        }
-    }
-
+    //UPDATE
     public void EditarPerfil(View view){
 
         CollectionReference collectionRef = db.collection("DatosUser");
@@ -530,8 +459,100 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void Cancelar(View view){
-        setContentView(binding.getRoot());
+    //DELETE
+    public void BorrarUsuario(View view){
+
+        new AlertDialog.Builder(this)
+                .setTitle("Borrar cuenta")
+                .setMessage("¿Estás seguro de que quieres borrar tu cuenta?")
+                .setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        borrarUsuario();
+                    }
+                })
+                .setNegativeButton("No", null)
+                .show();
     }
+
+    private void borrarUsuario() {
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            String userId = user.getUid();
+
+            // Borrar datos de Firestore Database en la colección "DatosUser"
+            db.collection("DatosUser").document(userId).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()) {
+                        Log.d(TAG, "Datos de usuario eliminados de Firestore Database");
+
+                        // Borrar documentos en la colección "Medicamentos" donde el campo "userId" coincide
+                        db.collection("Botiquin").whereEqualTo("IdUsuario", userId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful() && task.getResult() != null) {
+                                    for (DocumentSnapshot document : task.getResult().getDocuments()) {
+                                        db.collection("Botiquin").document(document.getId()).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (task.isSuccessful()) {
+                                                    Log.d(TAG, "Documento de Botiquin eliminado.");
+                                                } else {
+                                                    Log.w(TAG, "Error al eliminar el documento de Botiquin.", task.getException());
+                                                }
+                                            }
+                                        });
+                                    }
+                                } else {
+                                    Log.w(TAG, "Error al obtener los documentos de Botiquin.", task.getException());
+                                }
+
+                                // Borrar cuenta de usuario en Firebase Authentication
+                                user.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            Log.d(TAG, "Cuenta de usuario eliminada.");
+                                            Toast.makeText(MainActivity.this, "Cuenta eliminada.", Toast.LENGTH_SHORT).show();
+                                            // Opcional: Redirigir al usuario a la pantalla de inicio de sesión
+                                        } else {
+                                            Log.w(TAG, "Error al eliminar la cuenta de usuario.", task.getException());
+                                            Toast.makeText(MainActivity.this, "Error al eliminar la cuenta.", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    } else {
+                        Log.w(TAG, "Error al eliminar los datos de usuario de Firestore Database.", task.getException());
+                        Toast.makeText(MainActivity.this, "Error al eliminar los datos de usuario.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+            onStart();
+        } else {
+            Toast.makeText(MainActivity.this, "No se ha encontrado", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * VALIDACIONES DE REGISTRO
+     * */
+    public static boolean emailValido(String email) {
+        //Función REGEX que exige que haya texto antes de la @, que haya @,
+        // que haya texto despues de la arroba y que despues del punto haya 2 o 3 letras
+        String patron = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,3}$";
+        return email != null && email.matches(patron);
+    }
+
+    public static boolean contraseniaValida(String password) {
+        // Funcion REGEX que exige que tiene que tener minimo 8 caracteres y máximo 24,
+        // tiene que incluir Mayusuculas, minusculas, numeros y algun caracter especial
+        String patron = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&+/_-])[A-Za-z\\d@$!%*?&+/_-]{8,24}$";
+
+        // Comprobar si la contraseña coincide con la expresión regular y no contiene espacios
+        return password != null && password.matches(patron) && !password.contains(" ");
+    }
+
 
     }
