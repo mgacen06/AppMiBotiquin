@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("com.google.gms.google-services")
@@ -15,9 +17,21 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // Leer la clave de API desde apikeys.properties
+        val apiKeysProperties = Properties()
+        val apiKeysPropertiesFile = rootProject.file("apikeys.properties")
+        if (apiKeysPropertiesFile.exists()) {
+            apiKeysPropertiesFile.inputStream().use { stream ->
+                apiKeysProperties.load(stream)
+            }
+        }
+
+        val openaiApiKey = apiKeysProperties.getProperty("openai.api.key") ?: ""
+        buildConfigField("String", "OPENAI_API_KEY", "\"$openaiApiKey\"")
     }
 
-    buildTypes {
+        buildTypes {
         release {
             isMinifyEnabled = false
             proguardFiles(
@@ -32,6 +46,7 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 }
 
