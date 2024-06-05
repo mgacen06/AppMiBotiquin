@@ -64,9 +64,11 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
     }
 
     public void updateMessages(List<ChatGPTMensajes> newMessages) {
-        chatMessages.clear();
+
+        //chatMessages.clear();
         chatMessages.addAll(newMessages);
         Log.d("ChatMessageAdapter", "Messages updated, new size: " + chatMessages.size());
         notifyDataSetChanged();
+
     }
 }

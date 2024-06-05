@@ -54,10 +54,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //mio
-        //setContentView(R.layout.login);
-        //getSupportActionBar().setTitle("Login");
-        // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
         mAuth.signOut();
         onStart();
@@ -94,11 +90,9 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("User: " +currentUser);
         if(currentUser != null){
             //Si no es null ve a la pantalla principal directamente
-            System.out.println("Peto por aqui, soy el user: " + currentUser.getUid());
             setContentView(binding.getRoot());
         } else{
             cambiarALogin(getCurrentFocus());
-            Toast.makeText(getApplicationContext(), "Inicie Sesion", Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -9,7 +9,12 @@
         android:id="@+id/messageTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
-        android:padding="8dp"
+        android:layout_margin="8dp"
+        android:background="@drawable/rounded_background"
+        android:padding="10dp"
+        android:text=""
+        android:textStyle="bold"
+        android:elevation="4dp"
         android:textColor="@android:color/black" />
+
 </LinearLayout>

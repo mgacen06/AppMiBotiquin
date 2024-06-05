@@ -1,5 +1,6 @@
 package com.example.bottonnavapp.ui.dashboard;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -7,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -82,6 +84,12 @@ public class DashboardFragment extends Fragment {
                 progressBar.setVisibility(View.VISIBLE);
                 sendMessage(messageText);
                 messageEditText.setText("");
+
+                // Ocultar el teclado
+                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (imm != null) {
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                }
             }
         });
 
@@ -102,10 +110,20 @@ public class DashboardFragment extends Fragment {
 
             db.collection("chats").add(chatMessage)
                     .addOnSuccessListener(documentReference -> {
+                        Log.d("DashboardFragment", "Message sent successfully: " + messageText);
                         // Mensaje enviado exitosamente
                         callOpenAI(messageText);
+
+                        //Mando el mensaje a recicleview
+                        List<ChatGPTMensajes> messages = new ArrayList<>();
+                            messages.add(chatMessage);
+                            Log.d("DashboardFragment", "Received message: " + chatMessage.getMensaje());
+                        chatMessageAdapter.updateMessages(messages);
+                        chatRecyclerView.scrollToPosition(chatMessageAdapter.getItemCount() - 1);
+
                     })
                     .addOnFailureListener(e -> {
+                        Log.w("DashboardFragment", "Error sending message", e);
                         // Error al enviar mensaje
                         //Quitamos la visibilidad de la progressBar
                         progressBar.setVisibility(View.GONE);
@@ -118,7 +136,7 @@ public class DashboardFragment extends Fragment {
         OpenAIApi apiService = RetrofitClient.getClient("https://api.openai.com/").create(OpenAIApi.class);
 
         //Pongo al asistente en un contexto concreto en cada mensaje, pero ese contexto no se guarda en firebase
-        String contextPrefix = "Eres una asistente de salud. Proporciona respuestas relacionadas con salud y medicina, no des respuestas muy largas, hazla un parrafo mas o menos. Se cuidadoso con tus respuestas y si un tema es complejo dile al usuario que consulte con un profesional. Quiero que todo lo que he dicho ahora lo tengas en cuenta pero no respondas a ello, solo tienes que responder a la consulta que vas a ver despues de estos dos puntos:  ";
+        String contextPrefix = "Eres una asistente de salud, recomienda medicamentos a tomar o pequeños consejos de salud y bienestar, si te hacen preguntas que no sean sobre ello tienes que decir que lo sientes, que eres un asistente en temas de salud. Proporciona respuestas relacionadas con salud y medicina, no des respuestas muy largas, hazla un parrafo mas o menos. Se cuidadoso con tus respuestas y si un tema es complejo dile al usuario que consulte con un profesional, para responder sobre algun medicamento busca en internet los nombres de medicamentos en la actualidad en españa, y ten en cuenta también la lista que proporciona CIMA en https://cima.aemps.es/cima/publico/home.html o a traves de su API en https://www.aemps.gob.es/apps/cima/docs/CIMA_REST_API.pdf. Quiero que todo lo que he dicho ahora lo tengas en cuenta pero no respondas a ello, solo tienes que responder a la consulta que vas a ver despues de estos dos puntos:  ";
         String completeMessage = contextPrefix + userMessage;
 
         List<OpenAIRequest.Message> messages = new ArrayList<>();
@@ -144,10 +162,22 @@ public class DashboardFragment extends Fragment {
 
                             db.collection("chats").add(chatMessage)
                                     .addOnSuccessListener(documentReference -> {
-                                        // Mensaje de la IA guardado exitosamente
+                                        // Mensaje a la IA enviado exitosamente
+                                        Log.d("DashboardFragment", "Bot message sent successfully: " + botMessage);
+
+                                        //Mando la respuesta a recicleview
+                                        List<ChatGPTMensajes> messages = new ArrayList<>();
+                                        messages.add(chatMessage);
+                                        Log.d("DashboardFragment", "Received message: " + botMessage);
+                                        chatMessageAdapter.updateMessages(messages);
+                                        chatRecyclerView.scrollToPosition(chatMessageAdapter.getItemCount() - 1);
+
+
                                     })
                                     .addOnFailureListener(e -> {
-                                        // Error al guardar el mensaje de la IA
+                                        // Error al enviar el mensaje a la IA
+                                        Log.w("DashboardFragment", "Error sending bot message", e);
+
                                     });
                         }
                     } else {
@@ -177,23 +207,28 @@ public class DashboardFragment extends Fragment {
                     if (e != null) {
                         Log.w("DashboardFragment", "Listen failed.", e);
                         return;
+                    } else {
+                        //Me esta llegando aquí, ha leido bien
+                        Log.w("DashboardFragment", "Listen successful.", e);
                     }
-
                     if (queryDocumentSnapshots != null) {
+                        Log.d("DashboardFragment", "QueryDocumentSnapshots != null" + queryDocumentSnapshots.toString());
                         List<ChatGPTMensajes> messages = new ArrayList<>();
                         for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                            Log.d("DashboardFragment", "Document data: " + document.getData());
                             ChatGPTMensajes message = document.toObject(ChatGPTMensajes.class);
                             messages.add(message);
                             Log.d("DashboardFragment", "Received message: " + message.getMensaje());
                         }
 
                         chatMessageAdapter.updateMessages(messages);
+                        Log.d("DashboardFragment", "Total messages: " + messages.size());
+
                     } else {
                         Log.d("DashboardFragment", "No messages found");
                     }
                 });
     }
-
 
     @Override
     public void onDestroyView() {

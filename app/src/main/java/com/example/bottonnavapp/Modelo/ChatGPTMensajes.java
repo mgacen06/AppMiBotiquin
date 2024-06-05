@@ -2,56 +2,56 @@ package com.example.bottonnavapp.Modelo;
 
 public class ChatGPTMensajes {
 
-    private String IdUsuario;
+    private String idUsuario;
 
     //Pongo un ID de receptor por si en un futuro
     //quiero incorporar mensajes con profesionales
     //Quede registrado quien envia cada cosa y para
     // que diferencie entre mensajes de el usuario a
     // chatGPT y los que son de chatGPT a el usuario
-    private String IdReceptor;
-    private String Mensaje;
-    private long TimeStamp;
+    private String idReceptor;
+    private String mensaje;
+    private long timeStamp;
 
     public ChatGPTMensajes() {
     }
 
     public ChatGPTMensajes(String idUsuario, String idReceptor, String mensaje, long timeStamp) {
-        IdUsuario = idUsuario;
-        IdReceptor = idReceptor;
-        Mensaje = mensaje;
-        TimeStamp = timeStamp;
+        this.idUsuario = idUsuario;
+        this.idReceptor = idReceptor;
+        this.mensaje = mensaje;
+        this.timeStamp = timeStamp;
     }
 
     public String getIdUsuario() {
-        return IdUsuario;
+        return idUsuario;
     }
 
     public void setIdUsuario(String idUsuario) {
-        IdUsuario = idUsuario;
+        this.idUsuario = idUsuario;
     }
 
     public String getIdReceptor() {
-        return IdReceptor;
+        return idReceptor;
     }
 
     public void setIdReceptor(String idReceptor) {
-        IdReceptor = idReceptor;
+        this.idReceptor = idReceptor;
     }
 
     public String getMensaje() {
-        return Mensaje;
+        return mensaje;
     }
 
     public void setMensaje(String mensaje) {
-        Mensaje = mensaje;
+        this.mensaje = mensaje;
     }
 
     public long getTimeStamp() {
-        return TimeStamp;
+        return timeStamp;
     }
 
     public void setTimeStamp(long timeStamp) {
-        TimeStamp = timeStamp;
+        this.timeStamp = timeStamp;
     }
 }
