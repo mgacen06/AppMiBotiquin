@@ -29,5 +29,6 @@
     <string name="escribe_un_mensaje">Escribe un mensaje</string>
     <string name="enviar">Enviar</string>
     <string name="MiBotiquin" />
+    <string name="borrar_cuenta">borrar cuenta</string>
 
 </resources>

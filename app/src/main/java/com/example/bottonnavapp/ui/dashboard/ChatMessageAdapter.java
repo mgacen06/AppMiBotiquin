@@ -38,13 +38,6 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
         return new MessageViewHolder(view);
     }
 
-    /*
-    @Override
-    public void onBindViewHolder(@NonNull MessageViewHolder holder, int position) {
-        ChatGPTMensajes chatMessage = chatMessages.get(position);
-        holder.messageTextView.setText(chatMessage.getMensaje());
-    }
-    */
     public void onBindViewHolder(@NonNull MessageViewHolder holder, int position) {
         if (chatMessages != null && position < chatMessages.size()) {
             ChatGPTMensajes chatMessage = chatMessages.get(position);

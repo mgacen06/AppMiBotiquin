@@ -133,6 +133,9 @@ public class MainActivity extends AppCompatActivity {
         //finish();
         //setContentView(R.layout.login);
 
+        // Posible fallo de inflate, posible solucion:
+        //binding = null;
+        //No funciona
 
         onStart();
     }
@@ -156,12 +159,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
     }
 
-    /**
-     * CONSEJOS CON CHATGPT
-     * */
-
-
-
+    //CONSEJOS CON CHATGPT EN DASHBOARDFRAGMENT
 
     /**
      * CRUD DE MEDICAMENTO
@@ -205,6 +203,56 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(binding.getRoot());
         Toast.makeText(view.getContext(), "Nuevo Medicamento creado", Toast.LENGTH_SHORT).show();
+    }
+
+    //READ
+    public void LeerMedicamentos(View view){
+        //Cargar la lista de medicamentos suyos
+        CollectionReference collectionRef = db.collection("Botiquin");
+
+        collectionRef.get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot querySnapshot) {
+                        for (DocumentSnapshot document : querySnapshot.getDocuments()) {
+                            // Acceder a los datos del documento
+                            String IdUsuario = document.getString("IdUsuario");
+
+                            assert IdUsuario != null;
+                            if(IdUsuario.equals(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())){
+                                //System.out.println(document.getId().toString());
+                                String CantidadDosis = document.getString("CantidadDosis");
+                                String FechaCaducidad = document.getString("FechaCaducidad");
+                                String NombreMedicamento = document.getString("NombreMedicamento");
+                                String Uso = document.getString("Uso");
+                                String ConReceta = document.getString("ConReceta");
+
+                                Medicamento medicamento = new Medicamento(CantidadDosis, FechaCaducidad,NombreMedicamento,Uso, ConReceta,IdUsuario);
+
+                                listamedicamentos.add(medicamento);
+                                lvDatos = (ListView) findViewById(R.id.lvDatos);
+                                ArrayAdapter<Medicamento> adapter = new ArrayAdapter<Medicamento>(MainActivity.this, android.R.layout.simple_list_item_1, listamedicamentos);
+                                lvDatos.setAdapter(adapter);
+                            }
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // Manejar el error
+                    }
+                });
+    }
+
+    //UPDATE
+    public void EditarMedicamento(View view){
+
+    }
+
+    //DELETE
+    public void BorrarMedicamento(View view){
+
     }
 
     /**
@@ -298,44 +346,8 @@ public class MainActivity extends AppCompatActivity {
                             assert user != null;
                             Toast.makeText(getApplicationContext(), "Bienvenido " + Objects.requireNonNull(user.getEmail()).substring(0, user.getEmail().indexOf('@')), Toast.LENGTH_SHORT).show();
 
-                            //Cargar la lista de medicamentos suyos
-                            CollectionReference collectionRef = db.collection("Botiquin");
-
-                            collectionRef.get()
-                                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                        @Override
-                                        public void onSuccess(QuerySnapshot querySnapshot) {
-                                            for (DocumentSnapshot document : querySnapshot.getDocuments()) {
-                                                // Acceder a los datos del documento
-                                                String IdUsuario = document.getString("IdUsuario");
-
-                                                assert IdUsuario != null;
-                                                if(IdUsuario.equals(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())){
-                                                    //System.out.println(document.getId().toString());
-                                                    String CantidadDosis = document.getString("CantidadDosis");
-                                                    String FechaCaducidad = document.getString("FechaCaducidad");
-                                                    String NombreMedicamento = document.getString("NombreMedicamento");
-                                                    String Uso = document.getString("Uso");
-                                                    String ConReceta = document.getString("ConReceta");
-
-                                                    Medicamento medicamento = new Medicamento(CantidadDosis, FechaCaducidad,NombreMedicamento,Uso, ConReceta,IdUsuario);
-
-                                                    listamedicamentos.add(medicamento);
-                                                    lvDatos = (ListView) findViewById(R.id.lvDatos);
-                                                    ArrayAdapter<Medicamento> adapter = new ArrayAdapter<Medicamento>(MainActivity.this, android.R.layout.simple_list_item_1, listamedicamentos);
-                                                    lvDatos.setAdapter(adapter);
-                                                }
-                                            }
-                                        }
-                                    })
-                                    .addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            // Manejar el error
-                                        }
-                                    });
-
-
+                            //Recoger la lista de medicamentos del usuario
+                            LeerMedicamentos(getCurrentFocus());
                             updateUI(user);
                         } else {
                             // Si el Login falla manda un mensaje al usuario.
@@ -491,6 +503,7 @@ public class MainActivity extends AppCompatActivity {
                                             public void onComplete(@NonNull Task<Void> task) {
                                                 if (task.isSuccessful()) {
                                                     Log.d(TAG, "Documento de Botiquin eliminado.");
+
                                                 } else {
                                                     Log.w(TAG, "Error al eliminar el documento de Botiquin.", task.getException());
                                                 }
@@ -508,7 +521,10 @@ public class MainActivity extends AppCompatActivity {
                                         if (task.isSuccessful()) {
                                             Log.d(TAG, "Cuenta de usuario eliminada.");
                                             Toast.makeText(MainActivity.this, "Cuenta eliminada.", Toast.LENGTH_SHORT).show();
-                                            // Opcional: Redirigir al usuario a la pantalla de inicio de sesión
+                                            // Redirigir al usuario a la pantalla de inicio de sesión
+                                            // Posible fallo de inflate, posible solucion:
+                                            // binding = null;
+                                            cambiarALogin(getCurrentFocus());
                                         } else {
                                             Log.w(TAG, "Error al eliminar la cuenta de usuario.", task.getException());
                                             Toast.makeText(MainActivity.this, "Error al eliminar la cuenta.", Toast.LENGTH_SHORT).show();
