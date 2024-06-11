@@ -57,7 +57,9 @@ public class MiBotiquinAdapter extends RecyclerView.Adapter<MiBotiquinAdapter.Me
 
         public void bind(final Medicamento medicamento, final OnItemClickListener listener) {
             nameTextView.setText(medicamento.getNombreMedicamento());
-            doseTextView.setText(medicamento.getCantidadDosis());
+
+            //El problema estaba en que recibia un numero e intentaba representarlo directamente sin hacer string
+            doseTextView.setText(String.valueOf(medicamento.getCantidadDosis()));
             itemView.setOnClickListener(v -> listener.onItemClick(medicamento));
         }
     }
