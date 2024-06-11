@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:layout_margin="10dp"
-    android:background="@color/cardview_light_background"
+    android:background="@color/cardview_dark_background"
     tools:context=".ui.home.HomeFragment">
 
     <Button
@@ -14,13 +14,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="CambiarANuevoMedicamento"
-        android:text="@string/nuevo_medicamento" />
+        android:text="@string/nuevo_medicamento"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/medicationRecyclerView"/>
 
-    <ListView
-        android:id="@+id/lvDatos"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/DarkFontColor"
-        />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/medicationRecyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@+id/addMedicationButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>

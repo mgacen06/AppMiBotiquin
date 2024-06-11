@@ -8,19 +8,17 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.example.bottonnavapp.Modelo.Medicamento;
 import com.example.bottonnavapp.databinding.ActivityMainBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -35,7 +33,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -47,9 +44,9 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
 
-    private ArrayList<Medicamento> listamedicamentos = new ArrayList<Medicamento>();
+    //private ArrayList<Medicamento> listamedicamentos = new ArrayList<Medicamento>();
 
-    private ListView lvDatos;
+    //private ListView lvDatos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,29 +54,6 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         mAuth.signOut();
         onStart();
-
-        /*
-        //prueba
-        lvDatos = (ListView) findViewById(R.id.lvDatos);
-        ArrayAdapter<Medicamento> adapter = new ArrayAdapter<Medicamento>(MainActivity.this, android.R.layout.simple_list_item_1, listamedicamentos);
-        lvDatos.setAdapter(adapter);
-        //fin
-
-         */
-    /*
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-        BottomNavigationView navView = findViewById(R.id.nav_view);
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications)
-                .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        NavigationUI.setupWithNavController(binding.navView, navController);
-
-     */
     }
 
     @Override
@@ -98,46 +72,25 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateUI(FirebaseUser user) {
         if (user != null) {
-            // Actualiza la interfaz de usuario con la información del usuario
-            //setContentView(R.layout.activity_main);
 
-            //nuevo
             binding = ActivityMainBinding.inflate(getLayoutInflater());
             setContentView(binding.getRoot());
-            //BottomNavigationView navView = findViewById(R.id.nav_view);
-            // Passing each menu ID as a set of Ids because each
-            // menu should be considered as top level destinations.
+
             AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                     R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications)
                     .build();
             NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
             NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
             NavigationUI.setupWithNavController(binding.navView, navController);
-
+            Log.d("MainActicity2", "UID: " + mAuth.getUid().toString());
 
             //prueba
-            lvDatos = (ListView) findViewById(R.id.lvDatos);
-            ArrayAdapter<Medicamento> adapter = new ArrayAdapter<Medicamento>(MainActivity.this, android.R.layout.simple_list_item_1, listamedicamentos);
-            lvDatos.setAdapter(adapter);
+            //lvDatos = (ListView) findViewById(R.id.lvDatos);
+            //ArrayAdapter<Medicamento> adapter = new ArrayAdapter<Medicamento>(MainActivity.this, android.R.layout.simple_list_item_1, listamedicamentos);
+            //lvDatos.setAdapter(adapter);
 
-            System.out.println("datos:" + lvDatos.toString());
+            //System.out.println("datos:" + lvDatos.toString());
         }
-    }
-
-    public void CerrarSesion(View view){
-        System.out.println("Cerrando: " + Objects.requireNonNull(mAuth.getCurrentUser()).getUid());
-        mAuth.signOut();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        System.out.println("User cerrado: " +currentUser);        //setContentView(null);
-        //Con finish(); puedo hacer que se cierre sesión
-        //finish();
-        //setContentView(R.layout.login);
-
-        // Posible fallo de inflate, posible solucion:
-        //binding = null;
-        //No funciona
-
-        onStart();
     }
 
     /**
@@ -155,6 +108,16 @@ public class MainActivity extends AppCompatActivity {
 
     public void CambiarANuevoMedicamento(View view){setContentView(R.layout.nuevo_medicamento);}
 
+    public void removeFragment() {
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_activity_main);
+        if (fragment != null) {
+            getSupportFragmentManager().beginTransaction()
+                    .remove(fragment)
+                    .commit();
+        }
+    }
+
+
     public void Cancelar(View view){
         setContentView(binding.getRoot());
     }
@@ -171,18 +134,17 @@ public class MainActivity extends AppCompatActivity {
         EditText Cantidad = findViewById(R.id.Cantidad);
         EditText Receta = findViewById(R.id.Receta);
         EditText Caducidad = findViewById(R.id.Caducidad);
-        EditText Uso = findViewById(R.id.Usos);
         EditText Nombre = findViewById(R.id.Nombre);
 
         //Consigo el id asociado para crear el documento de botiquin
         String IdUsuario= Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
         Map<String, Object> botiquin = new HashMap<>();
-        botiquin.put("CantidadDosis", Cantidad.getText().toString());
-        botiquin.put("FechaCaducidad", Caducidad.getText().toString());
-        botiquin.put("NombreMedicamento", Nombre.getText().toString());
-        botiquin.put("Uso", Uso.getText().toString());
-        botiquin.put("ConReceta", Receta.getText().toString());
         botiquin.put("IdUsuario", IdUsuario);
+        botiquin.put("NombreMedicamento", Nombre.getText().toString());
+        botiquin.put("ConReceta", Receta.getText().toString());
+        botiquin.put("FechaCaducidad", Caducidad.getText().toString());
+        botiquin.put("CantidadDosis", Cantidad.getText().toString());
+
 
         // Add a new document with a generated ID
         db.collection("Botiquin").add(botiquin)
@@ -206,6 +168,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //READ
+    /*
     public void LeerMedicamentos(View view){
         //Cargar la lista de medicamentos suyos
         CollectionReference collectionRef = db.collection("Botiquin");
@@ -221,18 +184,14 @@ public class MainActivity extends AppCompatActivity {
                             assert IdUsuario != null;
                             if(IdUsuario.equals(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())){
                                 //System.out.println(document.getId().toString());
-                                String CantidadDosis = document.getString("CantidadDosis");
+                                int CantidadDosis = Integer.parseInt(document.getLong("CantidadDosis").toString());
                                 String FechaCaducidad = document.getString("FechaCaducidad");
                                 String NombreMedicamento = document.getString("NombreMedicamento");
-                                String Uso = document.getString("Uso");
-                                String ConReceta = document.getString("ConReceta");
+                                boolean ConReceta = document.getBoolean("ConReceta");
 
-                                Medicamento medicamento = new Medicamento(CantidadDosis, FechaCaducidad,NombreMedicamento,Uso, ConReceta,IdUsuario);
+                                Medicamento medicamento = new Medicamento(IdUsuario, NombreMedicamento, ConReceta, FechaCaducidad, CantidadDosis);
 
-                                listamedicamentos.add(medicamento);
-                                lvDatos = (ListView) findViewById(R.id.lvDatos);
-                                ArrayAdapter<Medicamento> adapter = new ArrayAdapter<Medicamento>(MainActivity.this, android.R.layout.simple_list_item_1, listamedicamentos);
-                                lvDatos.setAdapter(adapter);
+                                //ArrayAdapter<Medicamento> adapter = new ArrayAdapter<Medicamento>(MainActivity.this, android.R.layout.simple_list_item_1, listamedicamentos);
                             }
                         }
                     }
@@ -244,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
     }
-
+    */
     //UPDATE
     public void EditarMedicamento(View view){
 
@@ -347,7 +306,7 @@ public class MainActivity extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(), "Bienvenido " + Objects.requireNonNull(user.getEmail()).substring(0, user.getEmail().indexOf('@')), Toast.LENGTH_SHORT).show();
 
                             //Recoger la lista de medicamentos del usuario
-                            LeerMedicamentos(getCurrentFocus());
+                            //LeerMedicamentos(getCurrentFocus());
                             updateUI(user);
                         } else {
                             // Si el Login falla manda un mensaje al usuario.
@@ -521,10 +480,13 @@ public class MainActivity extends AppCompatActivity {
                                         if (task.isSuccessful()) {
                                             Log.d(TAG, "Cuenta de usuario eliminada.");
                                             Toast.makeText(MainActivity.this, "Cuenta eliminada.", Toast.LENGTH_SHORT).show();
-                                            // Redirigir al usuario a la pantalla de inicio de sesión
-                                            // Posible fallo de inflate, posible solucion:
-                                            // binding = null;
-                                            cambiarALogin(getCurrentFocus());
+                                            //limpiar datos
+                                            //listamedicamentos.clear();
+                                            //Quitar el fragmento
+                                            removeFragment();
+
+                                            //Llamar a la funcion que reinicia la app
+                                            onStart();
                                         } else {
                                             Log.w(TAG, "Error al eliminar la cuenta de usuario.", task.getException());
                                             Toast.makeText(MainActivity.this, "Error al eliminar la cuenta.", Toast.LENGTH_SHORT).show();
@@ -544,6 +506,22 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(MainActivity.this, "No se ha encontrado", Toast.LENGTH_SHORT).show();
         }
     }
+
+    //SIGNOUT
+    public void CerrarSesion(View view){
+        System.out.println("Cerrando: " + Objects.requireNonNull(mAuth.getCurrentUser()).getUid());
+        mAuth.signOut();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        System.out.println("User cerrado: " +currentUser);
+        //limpiar datos
+        //listamedicamentos.clear();
+        //Quitar el fragmento
+        removeFragment();
+
+        //Llamar a la funcion que reinicia la app
+        onStart();
+    }
+
 
     /**
      * VALIDACIONES DE REGISTRO

@@ -2,27 +2,31 @@ package com.example.bottonnavapp.Modelo;
 
 public class Medicamento {
 
-    private String CantidadDosis;
-    private String FechaCaducidad;
-    private String NombreMedicamento;
-    private String Uso;
-    private String ConReceta;
     private String IdUsuario;
+    private String NombreMedicamento;
+    private boolean ConReceta;
+    private String FechaCaducidad;
+    private int CantidadDosis;
 
-    public Medicamento(String cantidadDosis, String fechaCaducidad, String nombreMedicamento, String uso, String conReceta, String idUsuario) {
+
+
+
+    public Medicamento() {
+    }
+
+    public Medicamento(String idUsuario, String nombreMedicamento, boolean conReceta, String fechaCaducidad, int cantidadDosis) {
         CantidadDosis = cantidadDosis;
         FechaCaducidad = fechaCaducidad;
         NombreMedicamento = nombreMedicamento;
-        Uso = uso;
         ConReceta = conReceta;
         IdUsuario = idUsuario;
     }
 
-    public String getCantidadDosis() {
+    public int getCantidadDosis() {
         return CantidadDosis;
     }
 
-    public void setCantidadDosis(String cantidadDosis) {
+    public void setCantidadDosis(int cantidadDosis) {
         CantidadDosis = cantidadDosis;
     }
 
@@ -42,19 +46,11 @@ public class Medicamento {
         NombreMedicamento = nombreMedicamento;
     }
 
-    public String getUso() {
-        return Uso;
-    }
-
-    public void setUso(String uso) {
-        Uso = uso;
-    }
-
-    public String getConReceta() {
+    public boolean isConReceta() {
         return ConReceta;
     }
 
-    public void setConReceta(String conReceta) {
+    public void setConReceta(boolean conReceta) {
         ConReceta = conReceta;
     }
 
@@ -64,10 +60,5 @@ public class Medicamento {
 
     public void setIdUsuario(String idUsuario) {
         IdUsuario = idUsuario;
-    }
-
-    @Override
-    public String toString() {
-        return NombreMedicamento;
     }
 }
