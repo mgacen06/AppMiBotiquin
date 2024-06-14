@@ -46,20 +46,23 @@ public class MiBotiquinAdapter extends RecyclerView.Adapter<MiBotiquinAdapter.Me
     }
 
     public static class MedicationViewHolder extends RecyclerView.ViewHolder {
-        private TextView nameTextView;
-        private TextView doseTextView;
+        private TextView NombreMedicamentoMostrar;
+        //private TextView dosis;
+        //private TextView conReceta;
+        //private TextView fechaCaducidad;
+
 
         public MedicationViewHolder(@NonNull View itemView) {
             super(itemView);
-            nameTextView = itemView.findViewById(R.id.nameTextView);
-            doseTextView = itemView.findViewById(R.id.doseTextView);
+            NombreMedicamentoMostrar = itemView.findViewById(R.id.NombreMedicamentoMostrar);
+            //dosis = itemView.findViewById(R.id.dosis);
         }
 
         public void bind(final Medicamento medicamento, final OnItemClickListener listener) {
-            nameTextView.setText(medicamento.getNombreMedicamento());
+            NombreMedicamentoMostrar.setText(medicamento.getNombreMedicamento());
 
             //El problema estaba en que recibia un numero e intentaba representarlo directamente sin hacer string
-            doseTextView.setText(String.valueOf(medicamento.getCantidadDosis()));
+            //dosis.setText(String.valueOf(medicamento.getCantidadDosis()));
             itemView.setOnClickListener(v -> listener.onItemClick(medicamento));
         }
     }

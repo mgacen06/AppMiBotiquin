@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -41,12 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth;
-
     private ActivityMainBinding binding;
-
-    //private ArrayList<Medicamento> listamedicamentos = new ArrayList<Medicamento>();
-
-    //private ListView lvDatos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +68,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateUI(FirebaseUser user) {
         if (user != null) {
-
             binding = ActivityMainBinding.inflate(getLayoutInflater());
             setContentView(binding.getRoot());
 
@@ -82,14 +77,7 @@ public class MainActivity extends AppCompatActivity {
             NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
             NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
             NavigationUI.setupWithNavController(binding.navView, navController);
-            Log.d("MainActicity2", "UID: " + mAuth.getUid().toString());
-
-            //prueba
-            //lvDatos = (ListView) findViewById(R.id.lvDatos);
-            //ArrayAdapter<Medicamento> adapter = new ArrayAdapter<Medicamento>(MainActivity.this, android.R.layout.simple_list_item_1, listamedicamentos);
-            //lvDatos.setAdapter(adapter);
-
-            //System.out.println("datos:" + lvDatos.toString());
+            Log.d("MainActicity", "UID: " + mAuth.getUid().toString());
         }
     }
 
@@ -117,49 +105,67 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     public void Cancelar(View view){
         setContentView(binding.getRoot());
     }
 
     //CONSEJOS CON CHATGPT EN DASHBOARDFRAGMENT
+    //FUNCIONES DE MI BOTIQUIN EN HOMEFRAGMENT
 
-    /**
-     * CRUD DE MEDICAMENTO
-     * */
     //CREATE
     public void CrearMedicamento(View view){
         System.out.println("Creando medicamento");
 
-        EditText Cantidad = findViewById(R.id.Cantidad);
-        EditText Receta = findViewById(R.id.Receta);
-        EditText Caducidad = findViewById(R.id.Caducidad);
         EditText Nombre = findViewById(R.id.Nombre);
+        Switch Receta = findViewById(R.id.switchReceta);
+        EditText Caducidad = findViewById(R.id.Caducidad);
+        EditText Cantidad = findViewById(R.id.Cantidad);
+
+        String nombreMedicamento = Nombre.getText().toString();
+        boolean conReceta = Receta.isChecked();
+        String fechaCaducidad = Caducidad.getText().toString();
+        String cantidadStr = Cantidad.getText().toString();
+
+        // Verifica si el campo de cantidad está vacío o no es un número válido
+        if (cantidadStr.isEmpty()) {
+            Toast.makeText(view.getContext(), "Por favor, introduce una cantidad válida.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        int cantidadDosis;
+        try {
+            cantidadDosis = Integer.parseInt(cantidadStr);
+        } catch (NumberFormatException e) {
+            Toast.makeText(view.getContext(), "Por favor, introduce una cantidad válida.", Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "Error al convertir Cantidad a entero", e);
+            return;
+        }
 
         //Consigo el id asociado para crear el documento de botiquin
         String IdUsuario= Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
         Map<String, Object> botiquin = new HashMap<>();
         botiquin.put("IdUsuario", IdUsuario);
-        botiquin.put("NombreMedicamento", Nombre.getText().toString());
-        botiquin.put("ConReceta", Receta.getText().toString());
-        botiquin.put("FechaCaducidad", Caducidad.getText().toString());
-        botiquin.put("CantidadDosis", Cantidad.getText().toString());
+        botiquin.put("NombreMedicamento", nombreMedicamento);
+        botiquin.put("ConReceta", conReceta);
+        botiquin.put("FechaCaducidad", fechaCaducidad);
+        botiquin.put("CantidadDosis", cantidadDosis);
 
-
-        // Add a new document with a generated ID
+        // Añadir un nuevo documento
         db.collection("Botiquin").add(botiquin)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
-                        Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
-                        System.out.println("Se ha creado un botiquin");
+                        Log.d(TAG, "Documento añadido con ID: " + documentReference.getId());
+
+                        // Navegar de vuelta a HomeFragment
+                        getSupportFragmentManager().popBackStack();
+
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error adding document", e);
-                        System.out.println("Ha fallado la creacion");
+                        Log.w(TAG, "Error añadiendo documento", e);
                     }
                 });
 

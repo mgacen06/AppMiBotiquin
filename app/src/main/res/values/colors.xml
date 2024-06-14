@@ -11,4 +11,5 @@
     <color name="DarkFontColor">#FFFFFFFF</color>
     <color name="DarkIconsColor">#00C8E0</color>
     <color name="DarkInfoColor">#7DDFEE</color>
+    <color name="DarkInfoColor2">#80D8FF</color>
 </resources>

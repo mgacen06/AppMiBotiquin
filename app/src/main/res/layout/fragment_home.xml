@@ -13,7 +13,7 @@
         android:id="@+id/button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="CambiarANuevoMedicamento"
+        android:onClick="CrearMedicamento"
         android:text="@string/nuevo_medicamento"
         app:layout_constraintBottom_toTopOf="@+id/medicationRecyclerView"
         app:layout_constraintEnd_toEndOf="parent"

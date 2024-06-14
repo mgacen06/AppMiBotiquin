@@ -22,4 +22,9 @@
         android:name="com.example.bottonnavapp.ui.notifications.NotificationsFragment"
         android:label="@string/title_notifications"
         tools:layout="@layout/fragment_notifications" />
+    <fragment
+        android:id="@+id/nuevoMedicamentoFragment"
+        android:name="com.example.bottonnavapp.ui.home.NuevoMedicamentoFragment"
+        android:label="Nuevo Medicamento"
+        tools:layout="@layout/nuevo_medicamento" />
 </navigation>

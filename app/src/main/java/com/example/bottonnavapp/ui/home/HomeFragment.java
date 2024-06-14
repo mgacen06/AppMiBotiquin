@@ -9,6 +9,9 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -38,7 +41,7 @@ public class HomeFragment extends Fragment {
 
         // Configurar el botón para añadir medicamentos
         Button addMedicationButton = root.findViewById(R.id.button2);
-        addMedicationButton.setOnClickListener(v -> CambiarANuevoMedicamento());
+        addMedicationButton.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.nuevoMedicamentoFragment));
 
         // Configurar RecyclerView
         medicationRecyclerView = root.findViewById(R.id.medicationRecyclerView);
@@ -56,6 +59,8 @@ public class HomeFragment extends Fragment {
         return root;
     }
 
+
+    //READ
     public void CargarMedicamentos() {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
@@ -81,6 +86,7 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    /*
     public void cargarPrueba(){
 
         medicationList.add(new Medicamento("2oixIiv5KNRY8acPMIaItkoBwXC2","Jamon",true, "",1));
@@ -89,9 +95,17 @@ public class HomeFragment extends Fragment {
         medicationAdapter.notifyDataSetChanged();
 
     }
+     */
+
 
     public void CambiarANuevoMedicamento() {
-        // Navigate to the fragment or activity to add a new medication
+        // Reemplazar el HomeFragment con el NuevoMedicamentoFragment
+        Fragment nuevoMedicamentoFragment = new NuevoMedicamentoFragment();
+        FragmentManager fragmentManager = getParentFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.nav_host_fragment_activity_main, nuevoMedicamentoFragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 
 

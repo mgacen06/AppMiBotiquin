@@ -8,66 +8,88 @@
 
     <Button
         android:id="@+id/buttonCancelarMed"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_width="120dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="25dp"
         android:layout_marginEnd="60dp"
-        android:onClick="Cancelar"
         android:text="Cancelar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/NombreMedicamento" />
-
-    <EditText
-        android:id="@+id/Nombre"
-        android:layout_width="120dp"
-        android:layout_height="23dp"
-        android:layout_marginStart="20dp"
-        android:background="@color/DarkFontColor"
-        android:ems="10"
-        android:inputType="text"
-        android:textColor="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.277"
-        app:layout_constraintStart_toEndOf="@+id/NombreMedicamento"
-        tools:layout_editor_absoluteY="466dp" />
-
-    <EditText
-        android:id="@+id/Caducidad"
-        android:layout_width="120dp"
-        android:layout_height="23dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="40dp"
-        android:background="@color/DarkFontColor"
-        android:ems="10"
-        android:inputType="datetime|date"
-        android:textColor="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.277"
-        app:layout_constraintStart_toEndOf="@+id/FechaCaducidad"
-        app:layout_constraintTop_toBottomOf="@+id/Receta" />
+        app:layout_constraintTop_toBottomOf="@+id/Cantidad" />
 
     <TextView
         android:id="@+id/NombreMedicamento"
         android:layout_width="120dp"
         android:layout_height="23dp"
-        android:layout_marginStart="50dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="20dp"
         android:background="@color/DarkBackgroundColor"
         android:text="Nombre"
         android:textColor="@color/DarkFontColor"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="466dp" />
+        app:layout_constraintTop_toBottomOf="@+id/switchReceta" />
+
+    <EditText
+        android:id="@+id/Nombre"
+        android:layout_width="120dp"
+        android:layout_height="23dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="60dp"
+        android:background="@color/DarkFontColor"
+        android:ems="10"
+        android:inputType="text"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/switchReceta" />
+
+    <EditText
+        android:id="@+id/Cantidad"
+        android:layout_width="120dp"
+        android:layout_height="23dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="60dp"
+        android:background="@color/DarkFontColor"
+        android:ems="10"
+        android:inputType="number"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Caducidad" />
 
     <TextView
         android:id="@+id/FechaCaducidad"
         android:layout_width="120dp"
         android:layout_height="23dp"
-        android:layout_marginStart="50dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="20dp"
         android:background="@color/DarkBackgroundColor"
         android:text="Fecha Caducidad"
         android:textColor="@color/DarkFontColor"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ConReceta" />
+        app:layout_constraintTop_toBottomOf="@+id/NombreMedicamento" />
+
+    <EditText
+        android:id="@+id/Caducidad"
+        android:layout_width="120dp"
+        android:layout_height="23dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="60dp"
+        android:background="@color/DarkFontColor"
+        android:ems="10"
+        android:inputType="datetime|date"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Nombre" />
+
+    <TextView
+        android:id="@+id/CantidadDosis"
+        android:layout_width="120dp"
+        android:layout_height="23dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/DarkBackgroundColor"
+        android:text="Cantidad dosis"
+        android:textColor="@color/DarkFontColor"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/FechaCaducidad" />
 
     <ImageView
         android:id="@+id/imageView2"
@@ -79,81 +101,26 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/logo" />
 
-    <TextView
-        android:id="@+id/CantidadDosis"
+    <Button
+        android:id="@+id/buttonNuevoMed"
         android:layout_width="120dp"
-        android:layout_height="23dp"
-        android:layout_marginStart="50dp"
-        android:layout_marginTop="30dp"
-        android:background="@color/DarkBackgroundColor"
-        android:text="Cantidad dosis"
-        android:textColor="@color/DarkFontColor"
+        android:layout_height="48dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="25dp"
+        android:onClick="CrearMedicamento"
+        android:text="Guardar"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Nuevo" />
+        app:layout_constraintTop_toBottomOf="@+id/Cantidad" />
 
-    <TextView
-        android:id="@+id/Nuevo"
-        android:layout_width="201dp"
-        android:layout_height="34dp"
-        android:layout_marginTop="40dp"
-        android:background="@color/DarkBackgroundColor"
-        android:text="Nuevo medicamento"
+    <Switch
+        android:id="@+id/switchReceta"
+        android:layout_width="163dp"
+        android:layout_height="28dp"
+        android:layout_marginTop="25dp"
+        android:text="Con Receta"
         android:textColor="@color/DarkFontColor"
-        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 
-    <TextView
-        android:id="@+id/ConReceta"
-        android:layout_width="120dp"
-        android:layout_height="23dp"
-        android:layout_marginStart="50dp"
-        android:layout_marginTop="40dp"
-        android:background="@color/DarkBackgroundColor"
-        android:text="Con receta"
-        android:textColor="@color/DarkFontColor"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/CantidadDosis" />
-
-    <EditText
-        android:id="@+id/Cantidad"
-        android:layout_width="120dp"
-        android:layout_height="23dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="30dp"
-        android:background="@color/DarkFontColor"
-        android:ems="10"
-        android:inputType="number"
-        android:textColor="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.28"
-        app:layout_constraintStart_toEndOf="@+id/CantidadDosis"
-        app:layout_constraintTop_toBottomOf="@+id/Nuevo" />
-
-    <EditText
-        android:id="@+id/Receta"
-        android:layout_width="120dp"
-        android:layout_height="23dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="40dp"
-        android:background="@color/DarkFontColor"
-        android:ems="10"
-        android:inputType="text"
-        android:textColor="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.277"
-        app:layout_constraintStart_toEndOf="@+id/ConReceta"
-        app:layout_constraintTop_toBottomOf="@+id/Cantidad" />
-
-    <Button
-        android:id="@+id/buttonNuevoMed"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="60dp"
-        android:layout_marginTop="30dp"
-        android:onClick="CrearMedicamento"
-        android:text="Guardar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/NombreMedicamento" />
 </androidx.constraintlayout.widget.ConstraintLayout>
