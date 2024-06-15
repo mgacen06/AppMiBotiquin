@@ -74,7 +74,7 @@ public class HomeFragment extends Fragment {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Medicamento medicamento = document.toObject(Medicamento.class);
                                 medicationList.add(medicamento);
-                                Log.d("HomeFragment", "Lista de medicamentos: " + medicationList.get(medicationList.size()-1).getNombreMedicamento().toString());
+                                Log.d("HomeFragment", "Lista de medicamentos: " + medicationList.get(medicationList.size()-1).getNombreMedicamento());
 
                             }
 
@@ -85,17 +85,6 @@ public class HomeFragment extends Fragment {
                     });
         }
     }
-
-    /*
-    public void cargarPrueba(){
-
-        medicationList.add(new Medicamento("2oixIiv5KNRY8acPMIaItkoBwXC2","Jamon",true, "",1));
-        medicationList.add(new Medicamento("2oixIiv5KNRY8acPMIaItkoBwXC2","Jamones",true, "",1));
-        medicationList.add(new Medicamento("2oixIiv5KNRY8acPMIaItkoBwXC2","Jamoncitos",true, "",1));
-        medicationAdapter.notifyDataSetChanged();
-
-    }
-     */
 
 
     public void CambiarANuevoMedicamento() {

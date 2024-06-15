@@ -2,6 +2,7 @@ package com.example.bottonnavapp;
 
 import static android.content.ContentValues.TAG;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -77,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
             NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
             NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
             NavigationUI.setupWithNavController(binding.navView, navController);
-            Log.d("MainActicity", "UID: " + mAuth.getUid().toString());
+            Log.d("MainActicity", "UID: " + mAuth.getUid());
         }
     }
 
@@ -94,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setTitle("Login");
     }
 
-    public void CambiarANuevoMedicamento(View view){setContentView(R.layout.nuevo_medicamento);}
+    //public void CambiarANuevoMedicamento(View view){setContentView(R.layout.nuevo_medicamento);}
 
     public void removeFragment() {
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_activity_main);
@@ -117,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("Creando medicamento");
 
         EditText Nombre = findViewById(R.id.Nombre);
-        Switch Receta = findViewById(R.id.switchReceta);
+        @SuppressLint("UseSwitchCompatOrMaterialCode") Switch Receta = findViewById(R.id.switchReceta);
         EditText Caducidad = findViewById(R.id.Caducidad);
         EditText Cantidad = findViewById(R.id.Cantidad);
 
@@ -125,6 +126,18 @@ public class MainActivity extends AppCompatActivity {
         boolean conReceta = Receta.isChecked();
         String fechaCaducidad = Caducidad.getText().toString();
         String cantidadStr = Cantidad.getText().toString();
+
+        // Verificar si el nombre del medicamento está vacío
+        if (nombreMedicamento.isEmpty()) {
+            Toast.makeText(view.getContext(), "Por favor, introduce el nombre del medicamento.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Verificar si la fecha de caducidad está vacía
+        if (fechaCaducidad.isEmpty()) {
+            Toast.makeText(view.getContext(), "Por favor, introduce la fecha de caducidad.", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         // Verifica si el campo de cantidad está vacío o no es un número válido
         if (cantidadStr.isEmpty()) {
@@ -137,7 +150,6 @@ public class MainActivity extends AppCompatActivity {
             cantidadDosis = Integer.parseInt(cantidadStr);
         } catch (NumberFormatException e) {
             Toast.makeText(view.getContext(), "Por favor, introduce una cantidad válida.", Toast.LENGTH_SHORT).show();
-            Log.e(TAG, "Error al convertir Cantidad a entero", e);
             return;
         }
 
@@ -156,10 +168,8 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
                         Log.d(TAG, "Documento añadido con ID: " + documentReference.getId());
-
                         // Navegar de vuelta a HomeFragment
                         getSupportFragmentManager().popBackStack();
-
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -169,7 +179,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-        setContentView(binding.getRoot());
         Toast.makeText(view.getContext(), "Nuevo Medicamento creado", Toast.LENGTH_SHORT).show();
     }
 
@@ -307,10 +316,34 @@ public class MainActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
+
+                            //Para este toast voy a hacer una consulta sobre el nombre del usuario
+                            CollectionReference collectionRef = db.collection("DatosUser");
                             FirebaseUser user = mAuth.getCurrentUser();
 
-                            assert user != null;
-                            Toast.makeText(getApplicationContext(), "Bienvenido " + Objects.requireNonNull(user.getEmail()).substring(0, user.getEmail().indexOf('@')), Toast.LENGTH_SHORT).show();
+                            collectionRef.get()
+                                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onSuccess(QuerySnapshot querySnapshot) {
+                                            for (DocumentSnapshot document : querySnapshot.getDocuments()) {
+                                                // Acceder a los datos del documento
+                                                String IdUsuario = document.getString("IdUsuario");
+
+                                                assert IdUsuario != null;
+                                                assert user != null;
+                                                if(IdUsuario.equals(user.getUid())){
+                                                    String Nombre = document.getString("Nombre");
+                                                    Toast.makeText(getApplicationContext(), "Bienvenido " + Nombre, Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            // Manejar el error
+                                        }
+                                    });
 
                             //Recoger la lista de medicamentos del usuario
                             //LeerMedicamentos(getCurrentFocus());
@@ -548,6 +581,5 @@ public class MainActivity extends AppCompatActivity {
         // Comprobar si la contraseña coincide con la expresión regular y no contiene espacios
         return password != null && password.matches(patron) && !password.contains(" ");
     }
-
 
     }
