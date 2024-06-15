@@ -13,7 +13,6 @@
         android:layout_height="wrap_content"
         android:layout_margin="0dp"
         android:background="@color/purple_500"
-        android:onClick="EditarPerfil"
         android:padding="10dp">
 
         <TextView
@@ -36,7 +35,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@android:drawable/ic_menu_edit" />
+            app:srcCompat="@android:drawable/ic_menu_add" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

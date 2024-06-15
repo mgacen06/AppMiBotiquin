@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,7 +26,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements MiBotiquinAdapter.OnItemClickListener {
 
     private RecyclerView medicationRecyclerView;
     private MiBotiquinAdapter medicationAdapter;
@@ -49,9 +50,7 @@ public class HomeFragment extends Fragment {
 
 
         medicationList = new ArrayList<>();
-        medicationAdapter = new MiBotiquinAdapter(medicationList, medicamento -> {
-            // Manejar clic en el elemento del medicamento
-        });
+        medicationAdapter = new MiBotiquinAdapter(medicationList, this);
         medicationRecyclerView.setAdapter(medicationAdapter);
 
         CargarMedicamentos();
@@ -84,6 +83,19 @@ public class HomeFragment extends Fragment {
                         }
                     });
         }
+    }
+
+    // Implementar el método de la interfaz OnItemClickListener
+    @Override
+    public void onItemClick(Medicamento medicamento) {
+        Bundle bundle = new Bundle();
+        bundle.putString("nombre", medicamento.getNombreMedicamento());
+        bundle.putBoolean("conReceta", medicamento.isConReceta());
+        bundle.putString("fechaCaducidad", medicamento.getFechaCaducidad());
+        bundle.putInt("cantidad", medicamento.getCantidadDosis());
+
+        NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_activity_main);
+        navController.navigate(R.id.editarMedicamentoFragment, bundle);
     }
 
 

@@ -25,6 +25,27 @@
     <fragment
         android:id="@+id/nuevoMedicamentoFragment"
         android:name="com.example.bottonnavapp.ui.home.NuevoMedicamentoFragment"
-        android:label="Nuevo Medicamento"
+        android:label="@string/nuevo_medicamento"
         tools:layout="@layout/nuevo_medicamento" />
+
+    <fragment
+        android:id="@+id/editarMedicamentoFragment"
+        android:name="com.example.bottonnavapp.ui.home.EditarMedicamentoFragment"
+        android:label="@string/editar_medicamento"
+        tools:layout="@layout/editar_medicamento">
+        <!-- Añadir los argumentos necesarios para pasar los datos del medicamento -->
+        <argument
+            android:name="nombre"
+            app:argType="string" />
+        <argument
+            android:name="conReceta"
+            app:argType="boolean" />
+        <argument
+            android:name="fechaCaducidad"
+            app:argType="string" />
+        <argument
+            android:name="cantidad"
+            app:argType="integer" />
+    </fragment>
+
 </navigation>

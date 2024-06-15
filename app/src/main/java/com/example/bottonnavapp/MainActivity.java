@@ -182,47 +182,9 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(view.getContext(), "Nuevo Medicamento creado", Toast.LENGTH_SHORT).show();
     }
 
-    //READ
-    /*
-    public void LeerMedicamentos(View view){
-        //Cargar la lista de medicamentos suyos
-        CollectionReference collectionRef = db.collection("Botiquin");
-
-        collectionRef.get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot querySnapshot) {
-                        for (DocumentSnapshot document : querySnapshot.getDocuments()) {
-                            // Acceder a los datos del documento
-                            String IdUsuario = document.getString("IdUsuario");
-
-                            assert IdUsuario != null;
-                            if(IdUsuario.equals(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())){
-                                //System.out.println(document.getId().toString());
-                                int CantidadDosis = Integer.parseInt(document.getLong("CantidadDosis").toString());
-                                String FechaCaducidad = document.getString("FechaCaducidad");
-                                String NombreMedicamento = document.getString("NombreMedicamento");
-                                boolean ConReceta = document.getBoolean("ConReceta");
-
-                                Medicamento medicamento = new Medicamento(IdUsuario, NombreMedicamento, ConReceta, FechaCaducidad, CantidadDosis);
-
-                                //ArrayAdapter<Medicamento> adapter = new ArrayAdapter<Medicamento>(MainActivity.this, android.R.layout.simple_list_item_1, listamedicamentos);
-                            }
-                        }
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        // Manejar el error
-                    }
-                });
-    }
-    */
-
     //UPDATE
     public void EditarMedicamento(View view){
-
+    //Codigo para guardar la edicion de medicamento
     }
 
     //DELETE

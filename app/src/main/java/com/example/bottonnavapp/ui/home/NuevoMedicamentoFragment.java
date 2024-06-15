@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -54,19 +53,13 @@ public class NuevoMedicamentoFragment extends Fragment {
                 getContext(),
                 (view, year1, month1, dayOfMonth) -> {
                     calendar.set(year1, month1, dayOfMonth);
-                    //Creo que no hace falta porque no deja elegir fechas pasadas por sistema pero lo pongo por si acaso
-                    if (calendar.getTimeInMillis() < System.currentTimeMillis()) {
-                        Toast.makeText(getContext(), "La fecha no puede ser pasada.", Toast.LENGTH_SHORT).show();
-                    } else {
                         Caducidad.setText(dayOfMonth + "/" + (month1 + 1) + "/" + year1);
-                    }
                 },
                 year, month, day
         );
-
+        //Aqui se establece que la fecha minima que pueda selecionar sea la actual
         datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
         datePickerDialog.show();
     }
-
 
 }

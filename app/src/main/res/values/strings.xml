@@ -30,5 +30,6 @@
     <string name="enviar">Enviar</string>
     <string name="MiBotiquin" />
     <string name="borrar_cuenta">borrar cuenta</string>
+    <string name="editar_medicamento">Editar Medicamento</string>
 
 </resources>
