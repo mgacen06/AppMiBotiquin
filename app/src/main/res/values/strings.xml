@@ -31,5 +31,12 @@
     <string name="MiBotiquin" />
     <string name="borrar_cuenta">borrar cuenta</string>
     <string name="editar_medicamento">Editar Medicamento</string>
+    <string name="fecha_caducidad">Fecha Caducidad</string>
+    <string name="existencias">Existencias</string>
+    <string name="logo_de_la_aplicaci_n">Logo de la aplicación</string>
+    <string name="con_receta">Con Receta</string>
+    <string name="borrar_medicamento">Borrar medicamento</string>
+    <string name="crear">Crear</string>
+    <string name="logo_de_la_aplicacion">Logo de la aplicacion</string>
 
 </resources>

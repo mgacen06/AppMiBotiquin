@@ -1,5 +1,6 @@
 package com.example.bottonnavapp.ui.home;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -7,30 +8,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
-
 import com.example.bottonnavapp.R;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
-
 import java.util.Calendar;
-
+import java.util.Objects;
 
 public class NuevoMedicamentoFragment extends Fragment {
-
-    private FirebaseAuth mAuth;
-    private FirebaseFirestore db;
     private EditText Caducidad;
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.nuevo_medicamento, container, false);
 
-        mAuth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
+        // Ocultar la flecha de retroceso
+        if (getActivity() != null) {
+            Objects.requireNonNull(((AppCompatActivity) getActivity()).getSupportActionBar()).setDisplayHomeAsUpEnabled(false);
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeButtonEnabled(false);
+        }
 
         // Configurar el botón para cancelar
         Button cancelButton = root.findViewById(R.id.buttonCancelarMed);
@@ -49,8 +45,8 @@ public class NuevoMedicamentoFragment extends Fragment {
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-        DatePickerDialog datePickerDialog = new DatePickerDialog(
-                getContext(),
+        @SuppressLint("SetTextI18n") DatePickerDialog datePickerDialog = new DatePickerDialog(
+                requireContext(),
                 (view, year1, month1, dayOfMonth) -> {
                     calendar.set(year1, month1, dayOfMonth);
                         Caducidad.setText(dayOfMonth + "/" + (month1 + 1) + "/" + year1);
@@ -61,5 +57,4 @@ public class NuevoMedicamentoFragment extends Fragment {
         datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
         datePickerDialog.show();
     }
-
 }

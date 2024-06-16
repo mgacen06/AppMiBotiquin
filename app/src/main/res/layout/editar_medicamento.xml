@@ -12,7 +12,7 @@
         android:layout_height="48dp"
         android:layout_marginTop="25dp"
         android:layout_marginEnd="60dp"
-        android:text="Cancelar"
+        android:text="@string/cancelar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/CantidadEditar" />
 
@@ -23,10 +23,11 @@
         android:layout_marginStart="60dp"
         android:layout_marginTop="20dp"
         android:background="@color/DarkBackgroundColor"
-        android:text="Nombre"
+        android:text="@string/nombre"
         android:textColor="@color/DarkFontColor"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/switchRecetaEditar" />
+        app:layout_constraintTop_toBottomOf="@+id/switchRecetaEditar"
+        tools:ignore="TextSizeCheck" />
 
     <EditText
         android:id="@+id/NombreEditarMed"
@@ -36,10 +37,12 @@
         android:layout_marginEnd="60dp"
         android:background="@color/DarkFontColor"
         android:ems="10"
+        android:importantForAutofill="no"
         android:inputType="text"
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/switchRecetaEditar" />
+        app:layout_constraintTop_toBottomOf="@+id/switchRecetaEditar"
+        tools:ignore="LabelFor,SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
     <EditText
         android:id="@+id/CantidadEditar"
@@ -49,10 +52,12 @@
         android:layout_marginEnd="60dp"
         android:background="@color/DarkFontColor"
         android:ems="10"
+        android:importantForAutofill="no"
         android:inputType="number"
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/CaducidadEditar" />
+        app:layout_constraintTop_toBottomOf="@+id/CaducidadEditar"
+        tools:ignore="LabelFor,SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
     <TextView
         android:id="@+id/FechaCaducidadEditar"
@@ -61,10 +66,11 @@
         android:layout_marginStart="60dp"
         android:layout_marginTop="20dp"
         android:background="@color/DarkBackgroundColor"
-        android:text="Fecha Caducidad"
+        android:text="@string/fecha_caducidad"
         android:textColor="@color/DarkFontColor"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/NombreMedicamentoEditar" />
+        app:layout_constraintTop_toBottomOf="@+id/NombreMedicamentoEditar"
+        tools:ignore="TextSizeCheck" />
 
     <EditText
         android:id="@+id/CaducidadEditar"
@@ -75,9 +81,12 @@
         android:background="@color/DarkFontColor"
         android:ems="10"
         android:focusable="false"
+        android:importantForAutofill="no"
+        android:inputType="datetime|date"
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/NombreEditarMed" />
+        app:layout_constraintTop_toBottomOf="@+id/NombreEditarMed"
+        tools:ignore="LabelFor,SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
     <TextView
         android:id="@+id/CantidadDosisEditar"
@@ -86,10 +95,11 @@
         android:layout_marginStart="60dp"
         android:layout_marginTop="20dp"
         android:background="@color/DarkBackgroundColor"
-        android:text="Cantidad dosis"
+        android:text="@string/existencias"
         android:textColor="@color/DarkFontColor"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/FechaCaducidadEditar" />
+        app:layout_constraintTop_toBottomOf="@+id/FechaCaducidadEditar"
+        tools:ignore="TextSizeCheck" />
 
     <ImageView
         android:id="@+id/imageView2Editar"
@@ -99,8 +109,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/logo" />
+        app:srcCompat="@drawable/logo"
+        android:contentDescription="@string/logo_de_la_aplicaci_n" />
 
+    <!--suppress AndroidMissingOnClickHandler -->
     <Button
         android:id="@+id/buttonNuevoMedEditar"
         android:layout_width="120dp"
@@ -108,7 +120,7 @@
         android:layout_marginStart="60dp"
         android:layout_marginTop="25dp"
         android:onClick="EditarMedicamento"
-        android:text="Guardar"
+        android:text="@string/guardar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/CantidadEditar" />
 
@@ -118,13 +130,13 @@
         android:layout_height="28dp"
         android:layout_marginTop="25dp"
         android:checked="true"
-        android:text="Con Receta"
+        android:text="@string/con_receta"
         android:textColor="@color/DarkFontColor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView2Editar"
         tools:checked="true"
-        tools:ignore="UseSwitchCompatOrMaterialXml" />
+        tools:ignore="UseSwitchCompatOrMaterialXml,TouchTargetSizeCheck" />
 
     <!-- Añadir el botón de borrar medicamento -->
     <Button
@@ -132,8 +144,9 @@
         android:layout_width="150dp"
         android:layout_height="56dp"
         android:layout_marginTop="25dp"
-        android:text="Borrar medicamento"
+        android:text="@string/borrar_medicamento"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonCancelarEdicion" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonCancelarEdicion"
+        tools:ignore="TextSizeCheck" />
 </androidx.constraintlayout.widget.ConstraintLayout>

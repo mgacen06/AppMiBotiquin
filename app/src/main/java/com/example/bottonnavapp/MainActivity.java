@@ -5,7 +5,6 @@ import static android.content.ContentValues.TAG;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -13,7 +12,6 @@ import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
@@ -23,18 +21,11 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.bottonnavapp.databinding.ActivityMainBinding;
 import com.example.bottonnavapp.ui.notifications.NotificationsFragment;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -168,20 +159,12 @@ public class MainActivity extends AppCompatActivity {
 
         // Añadir un nuevo documento
         db.collection("Botiquin").add(botiquin)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d(TAG, "Documento añadido con ID: " + documentReference.getId());
-                        // Navegar de vuelta a HomeFragment
-                        getSupportFragmentManager().popBackStack();
-                    }
+                .addOnSuccessListener(documentReference -> {
+                    Log.d(TAG, "Documento añadido con ID: " + documentReference.getId());
+                    // Navegar de vuelta a HomeFragment
+                    getSupportFragmentManager().popBackStack();
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error añadiendo documento", e);
-                    }
-                });
+                .addOnFailureListener(e -> Log.w(TAG, "Error añadiendo documento", e));
 
         Toast.makeText(view.getContext(), "Nuevo Medicamento creado", Toast.LENGTH_SHORT).show();
     }
@@ -211,24 +194,22 @@ public class MainActivity extends AppCompatActivity {
         new AlertDialog.Builder(this)
                 .setTitle("Borrar medicamento")
                 .setMessage("¿Estás seguro de que quieres borrar el medicamento?")
-                .setPositiveButton("Sí", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        FirebaseFirestore db = FirebaseFirestore.getInstance();
+                .setPositiveButton("Sí", (dialog, which) -> {
+                    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-                        // Borrar el documento con el ID proporcionado
-                        db.collection("Botiquin").document(documentId)
-                                .delete()
-                                .addOnSuccessListener(aVoid -> {
-                                    Log.d(TAG, "Documento borrado exitosamente!");
-                                    // Navegar de vuelta a HomeFragment después de borrar
-                                    getSupportFragmentManager().popBackStack();
-                                    Toast.makeText(view.getContext(), "Medicamento borrado", Toast.LENGTH_SHORT).show();
-                                })
-                                .addOnFailureListener(e -> {
-                                    Log.w(TAG, "Error borrando el documento", e);
-                                    Toast.makeText(view.getContext(), "Error al borrar el medicamento", Toast.LENGTH_SHORT).show();
-                                });
-                    }
+                    // Borrar el documento con el ID proporcionado
+                    db.collection("Botiquin").document(documentId)
+                            .delete()
+                            .addOnSuccessListener(aVoid -> {
+                                Log.d(TAG, "Documento borrado exitosamente!");
+                                // Navegar de vuelta a HomeFragment después de borrar
+                                getSupportFragmentManager().popBackStack();
+                                Toast.makeText(view.getContext(), "Medicamento borrado", Toast.LENGTH_SHORT).show();
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.w(TAG, "Error borrando el documento", e);
+                                Toast.makeText(view.getContext(), "Error al borrar el medicamento", Toast.LENGTH_SHORT).show();
+                            });
                 })
                 .setNegativeButton("No", null)
                 .show();
@@ -259,41 +240,34 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void register(String email, String password, Activity activity) {
-        mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener((Activity) activity, (OnCompleteListener<AuthResult>) new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    // Login exitoso, proceso a crear un perfil con información extra del usuario
-                    Toast.makeText(getApplicationContext(), "Usuario creado correctamente " + Objects.requireNonNull(Objects.requireNonNull(mAuth.getCurrentUser()).getEmail()).substring(0, mAuth.getCurrentUser().getEmail().indexOf('@')),
-                            Toast.LENGTH_SHORT).show();
+        mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(activity, task -> {
+            if (task.isSuccessful()) {
+                // Login exitoso, proceso a crear un perfil con información extra del usuario
+                Toast.makeText(getApplicationContext(), "Usuario creado correctamente " + Objects.requireNonNull(Objects.requireNonNull(mAuth.getCurrentUser()).getEmail()).substring(0, mAuth.getCurrentUser().getEmail().indexOf('@')),
+                        Toast.LENGTH_SHORT).show();
 
-                    String IdUsuario= Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
-                    String Nombre = Objects.requireNonNull(Objects.requireNonNull(mAuth.getCurrentUser()).getEmail()).substring(0, mAuth.getCurrentUser().getEmail().indexOf('@'));
+                String IdUsuario= Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
+                String Nombre = Objects.requireNonNull(Objects.requireNonNull(mAuth.getCurrentUser()).getEmail()).substring(0, mAuth.getCurrentUser().getEmail().indexOf('@'));
 
-                    //Hago esto para que al guardar dtos del Perfil ponga la primera letra en mayusculas
-                    String NombreMandar = Nombre.substring(0, 1).toUpperCase() + Nombre.substring(1);
+                //Hago esto para que al guardar dtos del Perfil ponga la primera letra en mayusculas
+                String NombreMandar = Nombre.substring(0, 1).toUpperCase() + Nombre.substring(1);
 
-                    final Map<String, Object> perfil = new HashMap<>();
-                    perfil.put("IdUsuario", IdUsuario);
-                    perfil.put("Nombre", NombreMandar);
-                    perfil.put("Telefono", "");
+                final Map<String, Object> perfil = new HashMap<>();
+                perfil.put("IdUsuario", IdUsuario);
+                perfil.put("Nombre", NombreMandar);
+                perfil.put("Telefono", "");
 
-                    //Guardo en la coleccion de DatosUser la informacion del perfil del usuario
-                    db.collection("DatosUser").document(IdUsuario).set(perfil)
-                            .addOnSuccessListener(aVoid -> {
-                                Log.d(TAG, "Documento creado con éxito.");
-                            })
-                            .addOnFailureListener(e -> {
-                                Log.w(TAG, "Error al crear el documento", e);
-                            });
+                //Guardo en la coleccion de DatosUser la informacion del perfil del usuario
+                db.collection("DatosUser").document(IdUsuario).set(perfil)
+                        .addOnSuccessListener(aVoid -> Log.d(TAG, "Documento creado con éxito."))
+                        .addOnFailureListener(e -> Log.w(TAG, "Error al crear el documento", e));
 
-                    setContentView(R.layout.login);
-                } else {
-                    // Si falla envia un mensaje al usuario
-                    Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                    Toast.makeText(getApplicationContext(), "Este correo ya ha sido registrado", Toast.LENGTH_SHORT).show();
-                    updateUI(null);
-                }
+                setContentView(R.layout.login);
+            } else {
+                // Si falla envia un mensaje al usuario
+                Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                Toast.makeText(getApplicationContext(), "Este correo ya ha sido registrado", Toast.LENGTH_SHORT).show();
+                updateUI(null);
             }
         });
     }
@@ -314,51 +288,42 @@ public class MainActivity extends AppCompatActivity {
 
     private void signIn(String email, String password) {
         mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithEmail:success");
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        // Sign in success, update UI with the signed-in user's information
+                        Log.d(TAG, "signInWithEmail:success");
 
-                            //Para este toast voy a hacer una consulta sobre el nombre del usuario
-                            CollectionReference collectionRef = db.collection("DatosUser");
-                            FirebaseUser user = mAuth.getCurrentUser();
+                        //Para este toast voy a hacer una consulta sobre el nombre del usuario
+                        CollectionReference collectionRef = db.collection("DatosUser");
+                        FirebaseUser user = mAuth.getCurrentUser();
 
-                            collectionRef.get()
-                                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                        @Override
-                                        public void onSuccess(QuerySnapshot querySnapshot) {
-                                            for (DocumentSnapshot document : querySnapshot.getDocuments()) {
-                                                // Acceder a los datos del documento
-                                                String IdUsuario = document.getString("IdUsuario");
+                        collectionRef.get()
+                                .addOnSuccessListener(querySnapshot -> {
+                                    for (DocumentSnapshot document : querySnapshot.getDocuments()) {
+                                        // Acceder a los datos del documento
+                                        String IdUsuario = document.getString("IdUsuario");
 
-                                                assert IdUsuario != null;
-                                                assert user != null;
-                                                if(IdUsuario.equals(user.getUid())){
-                                                    String Nombre = document.getString("Nombre");
-                                                    Toast.makeText(getApplicationContext(), "Bienvenido " + Nombre, Toast.LENGTH_SHORT).show();
-                                                }
-                                            }
+                                        assert IdUsuario != null;
+                                        assert user != null;
+                                        if(IdUsuario.equals(user.getUid())){
+                                            String Nombre = document.getString("Nombre");
+                                            Toast.makeText(getApplicationContext(), "Bienvenido " + Nombre, Toast.LENGTH_SHORT).show();
                                         }
-                                    })
-                                    .addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            // Manejar el error
-                                        }
-                                    });
+                                    }
+                                })
+                                .addOnFailureListener(e -> {
+                                    // Manejar el error
+                                });
 
-                            //Recoger la lista de medicamentos del usuario
-                            //LeerMedicamentos(getCurrentFocus());
-                            updateUI(user);
-                        } else {
-                            // Si el Login falla manda un mensaje al usuario.
-                            Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(getApplicationContext(), "Datos incorrectos", Toast.LENGTH_SHORT).show();
+                        //Recoger la lista de medicamentos del usuario
+                        //LeerMedicamentos(getCurrentFocus());
+                        updateUI(user);
+                    } else {
+                        // Si el Login falla manda un mensaje al usuario.
+                        Log.w(TAG, "signInWithEmail:failure", task.getException());
+                        Toast.makeText(getApplicationContext(), "Datos incorrectos", Toast.LENGTH_SHORT).show();
 
-                            updateUI(null);
-                        }
+                        updateUI(null);
                     }
                 });
     }
@@ -371,33 +336,27 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.editar_perfil);
 
         collectionRef.get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot querySnapshot) {
-                        for (DocumentSnapshot document : querySnapshot.getDocuments()) {
-                            // Acceder a los datos del documento
-                            String IdUsuario = document.getString("IdUsuario");
+                .addOnSuccessListener(querySnapshot -> {
+                    for (DocumentSnapshot document : querySnapshot.getDocuments()) {
+                        // Acceder a los datos del documento
+                        String IdUsuario = document.getString("IdUsuario");
 
-                            assert IdUsuario != null;
-                            assert user != null;
-                            if(IdUsuario.equals(user.getUid())){
-                                String Nombre = document.getString("Nombre");
-                                String Telefono = document.getString("Telefono");
+                        assert IdUsuario != null;
+                        assert user != null;
+                        if(IdUsuario.equals(user.getUid())){
+                            String Nombre = document.getString("Nombre");
+                            String Telefono = document.getString("Telefono");
 
-                                EditText editTextNombre = findViewById(R.id.EmailRegister);
-                                EditText editTextPhone = findViewById(R.id.TelefonoUpdateProfile);
+                            EditText editTextNombre = findViewById(R.id.EmailRegister);
+                            EditText editTextPhone = findViewById(R.id.TelefonoUpdateProfile);
 
-                                editTextNombre.setHint(Nombre);
-                                editTextPhone.setHint(Telefono);
-                            }
+                            editTextNombre.setHint(Nombre);
+                            editTextPhone.setHint(Telefono);
                         }
                     }
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        // Manejar el error
-                    }
+                .addOnFailureListener(e -> {
+                    // Manejar el error
                 });
     }
 
@@ -425,48 +384,45 @@ public class MainActivity extends AppCompatActivity {
         perfil.put("Telefono", PhoneUser);
 
         // Verificar si el documento ya existe
-        db.collection("DatosUser").document(IdUsuario).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        // El documento existe, actualizarlo
-                        db.collection("DatosUser").document(IdUsuario).update(perfil)
-                                .addOnSuccessListener(aVoid -> {
-                                    Log.d(TAG, "Documento actualizado con éxito.");
-                                    Toast.makeText(view.getContext(), "Perfil actualizado", Toast.LENGTH_SHORT).show();
-                                    NotificationsFragment fragment = (NotificationsFragment) getSupportFragmentManager().findFragmentById(R.id.navigation_notifications);
-                                    if (fragment != null && fragment.isVisible()) {
-                                        fragment.actualizarDatosPerfil(NombreUser, PhoneUser);
-                                    }
-                                    setContentView(binding.getRoot());
-                                })
-                                .addOnFailureListener(e -> {
-                                    Log.w(TAG, "Error al actualizar el documento", e);
-                                    Toast.makeText(view.getContext(), "Error al actualizar perfil", Toast.LENGTH_SHORT).show();
-                                });
-                    } else {
-                        // El documento no existe, crearlo
-                        db.collection("DatosUser").document(IdUsuario).set(perfil)
-                                .addOnSuccessListener(aVoid -> {
-                                    Log.d(TAG, "Documento creado con éxito.");
-                                    Toast.makeText(view.getContext(), "Perfil creado", Toast.LENGTH_SHORT).show();
-                                    NotificationsFragment fragment = (NotificationsFragment) getSupportFragmentManager().findFragmentById(R.id.navigation_notifications);
-                                    if (fragment != null && fragment.isVisible()) {
-                                        fragment.actualizarDatosPerfil(NombreUser, PhoneUser);
-                                    }
-                                    setContentView(binding.getRoot());
-                                })
-                                .addOnFailureListener(e -> {
-                                    Log.w(TAG, "Error al crear el documento", e);
-                                    Toast.makeText(view.getContext(), "Error al crear perfil", Toast.LENGTH_SHORT).show();
-                                });
-                    }
+        db.collection("DatosUser").document(IdUsuario).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    // El documento existe, actualizarlo
+                    db.collection("DatosUser").document(IdUsuario).update(perfil)
+                            .addOnSuccessListener(aVoid -> {
+                                Log.d(TAG, "Documento actualizado con éxito.");
+                                Toast.makeText(view.getContext(), "Perfil actualizado", Toast.LENGTH_SHORT).show();
+                                NotificationsFragment fragment = (NotificationsFragment) getSupportFragmentManager().findFragmentById(R.id.navigation_notifications);
+                                if (fragment != null && fragment.isVisible()) {
+                                    fragment.actualizarDatosPerfil(NombreUser, PhoneUser);
+                                }
+                                setContentView(binding.getRoot());
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.w(TAG, "Error al actualizar el documento", e);
+                                Toast.makeText(view.getContext(), "Error al actualizar perfil", Toast.LENGTH_SHORT).show();
+                            });
                 } else {
-                    Log.d(TAG, "Error al obtener el documento: ", task.getException());
-                    Toast.makeText(view.getContext(), "Error al verificar perfil", Toast.LENGTH_SHORT).show();
+                    // El documento no existe, crearlo
+                    db.collection("DatosUser").document(IdUsuario).set(perfil)
+                            .addOnSuccessListener(aVoid -> {
+                                Log.d(TAG, "Documento creado con éxito.");
+                                Toast.makeText(view.getContext(), "Perfil creado", Toast.LENGTH_SHORT).show();
+                                NotificationsFragment fragment = (NotificationsFragment) getSupportFragmentManager().findFragmentById(R.id.navigation_notifications);
+                                if (fragment != null && fragment.isVisible()) {
+                                    fragment.actualizarDatosPerfil(NombreUser, PhoneUser);
+                                }
+                                setContentView(binding.getRoot());
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.w(TAG, "Error al crear el documento", e);
+                                Toast.makeText(view.getContext(), "Error al crear perfil", Toast.LENGTH_SHORT).show();
+                            });
                 }
+            } else {
+                Log.d(TAG, "Error al obtener el documento: ", task.getException());
+                Toast.makeText(view.getContext(), "Error al verificar perfil", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -477,11 +433,7 @@ public class MainActivity extends AppCompatActivity {
         new AlertDialog.Builder(this)
                 .setTitle("Borrar cuenta")
                 .setMessage("¿Estás seguro de que quieres borrar tu cuenta?")
-                .setPositiveButton("Sí", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        borrarUsuario();
-                    }
-                })
+                .setPositiveButton("Sí", (dialog, which) -> borrarUsuario())
                 .setNegativeButton("No", null)
                 .show();
     }
@@ -492,60 +444,48 @@ public class MainActivity extends AppCompatActivity {
             String userId = user.getUid();
 
             // Borrar datos de Firestore Database en la colección "DatosUser"
-            db.collection("DatosUser").document(userId).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if (task.isSuccessful()) {
-                        Log.d(TAG, "Datos de usuario eliminados de Firestore Database");
+            db.collection("DatosUser").document(userId).delete().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Log.d(TAG, "Datos de usuario eliminados de Firestore Database");
 
-                        // Borrar documentos en la colección "Medicamentos" donde el campo "userId" coincide
-                        db.collection("Botiquin").whereEqualTo("IdUsuario", userId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                if (task.isSuccessful() && task.getResult() != null) {
-                                    for (DocumentSnapshot document : task.getResult().getDocuments()) {
-                                        db.collection("Botiquin").document(document.getId()).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                if (task.isSuccessful()) {
-                                                    Log.d(TAG, "Documento de Botiquin eliminado.");
+                    // Borrar documentos en la colección "Medicamentos" donde el campo "userId" coincide
+                    db.collection("Botiquin").whereEqualTo("IdUsuario", userId).get().addOnCompleteListener(task1 -> {
+                        if (task1.isSuccessful() && task1.getResult() != null) {
+                            for (DocumentSnapshot document : task1.getResult().getDocuments()) {
+                                db.collection("Botiquin").document(document.getId()).delete().addOnCompleteListener(task11 -> {
+                                    if (task11.isSuccessful()) {
+                                        Log.d(TAG, "Documento de Botiquin eliminado.");
 
-                                                } else {
-                                                    Log.w(TAG, "Error al eliminar el documento de Botiquin.", task.getException());
-                                                }
-                                            }
-                                        });
-                                    }
-                                } else {
-                                    Log.w(TAG, "Error al obtener los documentos de Botiquin.", task.getException());
-                                }
-
-                                // Borrar cuenta de usuario en Firebase Authentication
-                                user.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        if (task.isSuccessful()) {
-                                            Log.d(TAG, "Cuenta de usuario eliminada.");
-                                            Toast.makeText(MainActivity.this, "Cuenta eliminada.", Toast.LENGTH_SHORT).show();
-                                            //limpiar datos
-                                            //listamedicamentos.clear();
-                                            //Quitar el fragmento
-                                            removeFragment();
-
-                                            //Llamar a la funcion que reinicia la app
-                                            onStart();
-                                        } else {
-                                            Log.w(TAG, "Error al eliminar la cuenta de usuario.", task.getException());
-                                            Toast.makeText(MainActivity.this, "Error al eliminar la cuenta.", Toast.LENGTH_SHORT).show();
-                                        }
+                                    } else {
+                                        Log.w(TAG, "Error al eliminar el documento de Botiquin.", task11.getException());
                                     }
                                 });
                             }
+                        } else {
+                            Log.w(TAG, "Error al obtener los documentos de Botiquin.", task1.getException());
+                        }
+
+                        // Borrar cuenta de usuario en Firebase Authentication
+                        user.delete().addOnCompleteListener(task112 -> {
+                            if (task112.isSuccessful()) {
+                                Log.d(TAG, "Cuenta de usuario eliminada.");
+                                Toast.makeText(MainActivity.this, "Cuenta eliminada.", Toast.LENGTH_SHORT).show();
+                                //limpiar datos
+                                //listamedicamentos.clear();
+                                //Quitar el fragmento
+                                removeFragment();
+
+                                //Llamar a la funcion que reinicia la app
+                                onStart();
+                            } else {
+                                Log.w(TAG, "Error al eliminar la cuenta de usuario.", task112.getException());
+                                Toast.makeText(MainActivity.this, "Error al eliminar la cuenta.", Toast.LENGTH_SHORT).show();
+                            }
                         });
-                    } else {
-                        Log.w(TAG, "Error al eliminar los datos de usuario de Firestore Database.", task.getException());
-                        Toast.makeText(MainActivity.this, "Error al eliminar los datos de usuario.", Toast.LENGTH_SHORT).show();
-                    }
+                    });
+                } else {
+                    Log.w(TAG, "Error al eliminar los datos de usuario de Firestore Database.", task.getException());
+                    Toast.makeText(MainActivity.this, "Error al eliminar los datos de usuario.", Toast.LENGTH_SHORT).show();
                 }
             });
             onStart();
@@ -560,11 +500,9 @@ public class MainActivity extends AppCompatActivity {
         mAuth.signOut();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         System.out.println("User cerrado: " +currentUser);
-        //limpiar datos
-        //listamedicamentos.clear();
+
         //Quitar el fragmento
         removeFragment();
-
         //Llamar a la funcion que reinicia la app
         onStart();
     }
@@ -572,7 +510,8 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * VALIDACIONES DE REGISTRO
-     * */
+     **/
+
     public static boolean emailValido(String email) {
         //Función REGEX que exige que haya texto antes de la @, que haya @,
         // que haya texto despues de la arroba y que despues del punto haya 2 o 3 letras

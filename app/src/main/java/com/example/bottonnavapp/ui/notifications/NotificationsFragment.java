@@ -1,5 +1,6 @@
 package com.example.bottonnavapp.ui.notifications;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,7 +11,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.example.bottonnavapp.databinding.FragmentNotificationsBinding;
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,8 +27,6 @@ public class NotificationsFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        NotificationsViewModel notificationsViewModel =
-                new ViewModelProvider(this).get(NotificationsViewModel.class);
 
         binding = FragmentNotificationsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
@@ -48,6 +46,7 @@ public class NotificationsFragment extends Fragment {
     }
 
     // Método para cargar datos del usuario desde Firestore
+    @SuppressLint("SetTextI18n")
     private void cargarDatosUsuario() {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
@@ -68,7 +67,6 @@ public class NotificationsFragment extends Fragment {
                             } else {
                                 nombrePerfilDatos.setText("No disponible");
                             }
-
                             if (telefono != null && !telefono.isEmpty()) {
                                 telefonoPerfilDatos.setText(telefono);
                             } else {
@@ -100,8 +98,6 @@ public class NotificationsFragment extends Fragment {
             telefonoPerfilDatos.setText(telefono);
         }
     }
-
-
 
     @Override
     public void onDestroyView() {

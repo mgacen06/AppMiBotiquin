@@ -4,19 +4,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.bottonnavapp.Modelo.Medicamento;
 import com.example.bottonnavapp.R;
-
 import java.util.List;
 
 public class MiBotiquinAdapter extends RecyclerView.Adapter<MiBotiquinAdapter.MedicationViewHolder> {
 
-    private List<Medicamento> medicationList;
-    private OnItemClickListener listener;
+    private final List<Medicamento> medicationList;
+    private final OnItemClickListener listener;
 
     // Interfaz para manejar el clic en un elemento del RecyclerView
     public interface OnItemClickListener {
@@ -48,8 +45,7 @@ public class MiBotiquinAdapter extends RecyclerView.Adapter<MiBotiquinAdapter.Me
     }
 
     public static class MedicationViewHolder extends RecyclerView.ViewHolder {
-        private TextView NombreMedicamentoMostrar;
-
+        private final TextView NombreMedicamentoMostrar;
         public MedicationViewHolder(@NonNull View itemView) {
             super(itemView);
             NombreMedicamentoMostrar = itemView.findViewById(R.id.NombreMedicamentoMostrar);

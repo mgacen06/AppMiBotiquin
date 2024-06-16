@@ -15,7 +15,6 @@ import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -44,17 +43,13 @@ public class DashboardFragment extends Fragment {
     // Nuevas variables para chatGPT
     private RecyclerView chatRecyclerView;
     private EditText messageEditText;
-    private Button sendButton;
     private ProgressBar progressBar;
     private ChatMessageAdapter chatMessageAdapter;
-    private List<ChatGPTMensajes> chatMessages;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        DashboardViewModel dashboardViewModel =
-                new ViewModelProvider(this).get(DashboardViewModel.class);
 
         binding = FragmentDashboardBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
@@ -66,11 +61,11 @@ public class DashboardFragment extends Fragment {
         // Configurar RecyclerView
         chatRecyclerView = binding.chatRecyclerView;
         messageEditText = binding.messageEditText;
-        sendButton = binding.sendButton;
+        Button sendButton = binding.sendButton;
         progressBar = binding.progressBar;
 
 
-        chatMessages = new ArrayList<>();
+        List<ChatGPTMensajes> chatMessages = new ArrayList<>();
         chatMessageAdapter = new ChatMessageAdapter(chatMessages);
 
         chatRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -86,7 +81,7 @@ public class DashboardFragment extends Fragment {
                 messageEditText.setText("");
 
                 // Ocultar el teclado
-                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                 if (imm != null) {
                     imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                 }
@@ -136,7 +131,7 @@ public class DashboardFragment extends Fragment {
         OpenAIApi apiService = RetrofitClient.getClient("https://api.openai.com/").create(OpenAIApi.class);
 
         //Pongo al asistente en un contexto concreto en cada mensaje, pero ese contexto no se guarda en firebase
-        String contextPrefix = "Eres una asistente de salud, recomienda medicamentos a tomar o pequeños consejos de salud y bienestar intenta siempre recomendar un medicamento a tomar antes de responderle que no puedes decirle nada, si te hacen preguntas que no sean sobre salud tienes que decir que lo sientes, que eres un asistente en temas de salud. Proporciona respuestas relacionadas con salud y medicina, no des respuestas muy largas, hazla un parrafo mas o menos. Se cuidadoso con tus respuestas y si un tema es complejo dile al usuario que consulte con un profesional, para responder sobre algun medicamento busca en internet los nombres de medicamentos en la actualidad en españa, y ten en cuenta también la lista que proporciona CIMA en https://cima.aemps.es/cima/publico/home.html o a traves de su API en https://www.aemps.gob.es/apps/cima/docs/CIMA_REST_API.pdf. Quiero que todo lo que he dicho ahora lo tengas en cuenta pero no respondas a ello, solo tienes que responder a la consulta que vas a ver despues de estos dos puntos:  ";
+        String contextPrefix = "Eres una asistente de salud, recomienda medicamentos a tomar o pequeños consejos de salud y bienestar intenta siempre recomendar un medicamento a tomar antes de responderle que no puedes decirle nada, si te hacen preguntas que no sean sobre salud recuerdale que eres un asistente en temas de salud. Proporciona respuestas relacionadas con salud y medicina, no des respuestas muy largas, hazla un parrafo mas o menos. Se cuidadoso con tus respuestas, para responder sobre algun medicamento busca en internet los nombres de medicamentos en la actualidad en españa, y ten en cuenta también la lista que proporciona CIMA en https://cima.aemps.es/cima/publico/home.html o a traves de su API en https://www.aemps.gob.es/apps/cima/docs/CIMA_REST_API.pdf. Quiero que todo lo que he dicho ahora lo tengas en cuenta pero no respondas a ello, solo tienes que responder a la consulta que vas a ver despues de estos dos puntos:  ";
         String completeMessage = contextPrefix + userMessage;
 
         List<OpenAIRequest.Message> messages = new ArrayList<>();
@@ -148,7 +143,7 @@ public class DashboardFragment extends Fragment {
             Call<OpenAIResponse> call = apiService.getChatResponse(request);
             call.enqueue(new Callback<OpenAIResponse>() {
                 @Override
-                public void onResponse(Call<OpenAIResponse> call, Response<OpenAIResponse> response) {
+                public void onResponse(@NonNull Call<OpenAIResponse> call, @NonNull Response<OpenAIResponse> response) {
                     progressBar.setVisibility(View.GONE);
                     if (response.isSuccessful() && response.body() != null) {
                         String botMessage = response.body().getChoices().get(0).getMessage().getContent();
@@ -190,7 +185,7 @@ public class DashboardFragment extends Fragment {
                 }
 
                 @Override
-                public void onFailure(Call<OpenAIResponse> call, Throwable t) {
+                public void onFailure(@NonNull Call<OpenAIResponse> call, @NonNull Throwable t) {
                     // Error en la llamada a la API
                     progressBar.setVisibility(View.GONE);
                 }
@@ -205,14 +200,14 @@ public class DashboardFragment extends Fragment {
                 .orderBy("timestamp")
                 .addSnapshotListener((queryDocumentSnapshots, e) -> {
                     if (e != null) {
-                        Log.w("DashboardFragment", "Listen failed.", e);
+                        Log.w("DashboardFragment", "Listen failed.");
                         return;
                     } else {
                         //Me esta llegando aquí, ha leido bien
-                        Log.w("DashboardFragment", "Listen successful.", e);
+                        Log.w("DashboardFragment", "Listen successful.");
                     }
                     if (queryDocumentSnapshots != null) {
-                        Log.d("DashboardFragment", "QueryDocumentSnapshots != null" + queryDocumentSnapshots.toString());
+                        Log.d("DashboardFragment", "QueryDocumentSnapshots != null" + queryDocumentSnapshots);
                         List<ChatGPTMensajes> messages = new ArrayList<>();
                         for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                             Log.d("DashboardFragment", "Document data: " + document.getData());

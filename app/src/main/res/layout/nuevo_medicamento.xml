@@ -12,7 +12,7 @@
         android:layout_height="48dp"
         android:layout_marginTop="25dp"
         android:layout_marginEnd="60dp"
-        android:text="Cancelar"
+        android:text="@string/cancelar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/Cantidad" />
 
@@ -23,10 +23,11 @@
         android:layout_marginStart="60dp"
         android:layout_marginTop="20dp"
         android:background="@color/DarkBackgroundColor"
-        android:text="Nombre"
+        android:text="@string/nombre"
         android:textColor="@color/DarkFontColor"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/switchReceta" />
+        app:layout_constraintTop_toBottomOf="@+id/switchReceta"
+        tools:ignore="TextSizeCheck" />
 
     <EditText
         android:id="@+id/Nombre"
@@ -36,10 +37,12 @@
         android:layout_marginEnd="60dp"
         android:background="@color/DarkFontColor"
         android:ems="10"
+        android:importantForAutofill="no"
         android:inputType="text"
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/switchReceta" />
+        app:layout_constraintTop_toBottomOf="@+id/switchReceta"
+        tools:ignore="LabelFor,SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
     <EditText
         android:id="@+id/Cantidad"
@@ -49,10 +52,12 @@
         android:layout_marginEnd="60dp"
         android:background="@color/DarkFontColor"
         android:ems="10"
+        android:importantForAutofill="no"
         android:inputType="number"
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Caducidad" />
+        app:layout_constraintTop_toBottomOf="@+id/Caducidad"
+        tools:ignore="LabelFor,SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
     <TextView
         android:id="@+id/FechaCaducidad"
@@ -61,10 +66,11 @@
         android:layout_marginStart="60dp"
         android:layout_marginTop="20dp"
         android:background="@color/DarkBackgroundColor"
-        android:text="Fecha Caducidad"
+        android:text="@string/fecha_caducidad"
         android:textColor="@color/DarkFontColor"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/NombreMedicamento" />
+        app:layout_constraintTop_toBottomOf="@+id/NombreMedicamento"
+        tools:ignore="TextSizeCheck" />
 
     <EditText
         android:id="@+id/Caducidad"
@@ -75,9 +81,12 @@
         android:background="@color/DarkFontColor"
         android:ems="10"
         android:focusable="false"
+        android:importantForAutofill="no"
+        android:inputType="datetime|date"
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Nombre" />
+        app:layout_constraintTop_toBottomOf="@+id/Nombre"
+        tools:ignore="LabelFor,SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
     <TextView
         android:id="@+id/CantidadDosis"
@@ -86,10 +95,11 @@
         android:layout_marginStart="60dp"
         android:layout_marginTop="20dp"
         android:background="@color/DarkBackgroundColor"
-        android:text="Cantidad dosis"
+        android:text="@string/existencias"
         android:textColor="@color/DarkFontColor"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/FechaCaducidad" />
+        app:layout_constraintTop_toBottomOf="@+id/FechaCaducidad"
+        tools:ignore="TextSizeCheck" />
 
     <ImageView
         android:id="@+id/imageView2"
@@ -99,7 +109,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/logo" />
+        app:srcCompat="@drawable/logo"
+        android:contentDescription="@string/logo_de_la_aplicaci_n" />
 
     <Button
         android:id="@+id/buttonNuevoMed"
@@ -108,7 +119,7 @@
         android:layout_marginStart="60dp"
         android:layout_marginTop="25dp"
         android:onClick="CrearMedicamento"
-        android:text="Crear"
+        android:text="@string/crear"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/Cantidad" />
 
@@ -118,12 +129,12 @@
         android:layout_height="28dp"
         android:layout_marginTop="25dp"
         android:checked="true"
-        android:text="Con Receta"
+        android:text="@string/con_receta"
         android:textColor="@color/DarkFontColor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView2"
         tools:checked="true"
-        tools:ignore="UseSwitchCompatOrMaterialXml" />
+        tools:ignore="UseSwitchCompatOrMaterialXml,TouchTargetSizeCheck" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

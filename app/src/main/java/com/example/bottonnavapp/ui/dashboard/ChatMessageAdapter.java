@@ -1,22 +1,20 @@
 package com.example.bottonnavapp.ui.dashboard;
 
+import android.annotation.SuppressLint;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.bottonnavapp.Modelo.ChatGPTMensajes;
 import com.example.bottonnavapp.R;
-
 import java.util.List;
 
 public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.MessageViewHolder> {
 
-    private List<ChatGPTMensajes> chatMessages;
+    private final List<ChatGPTMensajes> chatMessages;
 
     public ChatMessageAdapter(List<ChatGPTMensajes> chatMessages) {
         this.chatMessages = chatMessages;
@@ -56,6 +54,7 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
         return chatMessages.size();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void updateMessages(List<ChatGPTMensajes> newMessages) {
 
         //chatMessages.clear();

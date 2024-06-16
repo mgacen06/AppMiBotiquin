@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--suppress AndroidMissingOnClickHandler -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -60,7 +61,8 @@
         android:textColor="@color/DarkFontColor"
         android:textSize="25sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        tools:ignore="TextSizeCheck" />
 
     <!-- Campo para mostrar el nombre del perfil -->
     <EditText
@@ -76,7 +78,9 @@
         android:textSize="21sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/NombrePerfil"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        android:importantForAutofill="no"
+        tools:ignore="LabelFor" />
 
     <TextView
         android:id="@+id/TelefonoPerfil"
@@ -88,7 +92,8 @@
         android:textColor="@color/DarkFontColor"
         android:textSize="25sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/NombrePerfil" />
+        app:layout_constraintTop_toBottomOf="@+id/NombrePerfil"
+        tools:ignore="TextSizeCheck" />
 
     <!-- Campo para mostrar el teléfono del perfil -->
     <EditText
@@ -104,6 +109,8 @@
         android:textSize="21sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/TelefonoPerfil"
-        app:layout_constraintTop_toBottomOf="@+id/nombrePerfilDatos" />
+        app:layout_constraintTop_toBottomOf="@+id/nombrePerfilDatos"
+        android:importantForAutofill="no"
+        tools:ignore="LabelFor" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
