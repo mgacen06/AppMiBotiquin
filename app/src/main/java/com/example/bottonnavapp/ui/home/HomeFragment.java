@@ -48,7 +48,6 @@ public class HomeFragment extends Fragment implements MiBotiquinAdapter.OnItemCl
         medicationRecyclerView = root.findViewById(R.id.medicationRecyclerView);
         medicationRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-
         medicationList = new ArrayList<>();
         medicationAdapter = new MiBotiquinAdapter(medicationList, this);
         medicationRecyclerView.setAdapter(medicationAdapter);
@@ -58,8 +57,7 @@ public class HomeFragment extends Fragment implements MiBotiquinAdapter.OnItemCl
         return root;
     }
 
-
-    //READ
+    // Método para cargar medicamentos desde Firestore
     public void CargarMedicamentos() {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
@@ -72,14 +70,15 @@ public class HomeFragment extends Fragment implements MiBotiquinAdapter.OnItemCl
 
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Medicamento medicamento = document.toObject(Medicamento.class);
+                                // Establecer el ID del documento
+                                medicamento.setId(document.getId());
                                 medicationList.add(medicamento);
                                 Log.d("HomeFragment", "Lista de medicamentos: " + medicationList.get(medicationList.size()-1).getNombreMedicamento());
-
                             }
 
                             medicationAdapter.notifyDataSetChanged();
                         } else {
-                            Log.e("HomeFragment", "Error reciviendo la lista de medicamentos: ", task.getException());
+                            Log.e("HomeFragment", "Error recibiendo la lista de medicamentos: ", task.getException());
                         }
                     });
         }
@@ -89,6 +88,10 @@ public class HomeFragment extends Fragment implements MiBotiquinAdapter.OnItemCl
     @Override
     public void onItemClick(Medicamento medicamento) {
         Bundle bundle = new Bundle();
+        // Pasar el ID del documento
+        bundle.putString("docId", medicamento.getId());
+        // Pasar el ID del usuario
+        bundle.putString("idUsuario", medicamento.getIdUsuario());
         bundle.putString("nombre", medicamento.getNombreMedicamento());
         bundle.putBoolean("conReceta", medicamento.isConReceta());
         bundle.putString("fechaCaducidad", medicamento.getFechaCaducidad());
@@ -98,7 +101,7 @@ public class HomeFragment extends Fragment implements MiBotiquinAdapter.OnItemCl
         navController.navigate(R.id.editarMedicamentoFragment, bundle);
     }
 
-
+    // Método para cambiar a NuevoMedicamentoFragment
     public void CambiarANuevoMedicamento() {
         // Reemplazar el HomeFragment con el NuevoMedicamentoFragment
         Fragment nuevoMedicamentoFragment = new NuevoMedicamentoFragment();
@@ -108,6 +111,4 @@ public class HomeFragment extends Fragment implements MiBotiquinAdapter.OnItemCl
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
-
-
 }

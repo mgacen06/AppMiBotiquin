@@ -8,12 +8,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
+import com.example.bottonnavapp.MainActivity;
 import com.example.bottonnavapp.R;
 
 import java.util.Calendar;
@@ -22,7 +24,8 @@ public class EditarMedicamentoFragment extends Fragment {
 
     private EditText editNombre, editCaducidad, editCantidad;
     private Switch switchReceta;
-    private Button buttonCancelarEdicion; // Declarar el botón de cancelar
+    private Button buttonCancelarEdicion, buttonGuardarEdicion,buttonBorrarMed;
+    private String docId, idUsuario;
 
     @Nullable
     @Override
@@ -35,15 +38,20 @@ public class EditarMedicamentoFragment extends Fragment {
         editCantidad = view.findViewById(R.id.CantidadEditar);
         switchReceta = view.findViewById(R.id.switchRecetaEditar);
         buttonCancelarEdicion = view.findViewById(R.id.buttonCancelarEdicion);
+        buttonGuardarEdicion = view.findViewById(R.id.buttonNuevoMedEditar);
+        buttonBorrarMed = view.findViewById(R.id.buttonBorrarMed);
 
         // Configurar el botón de cancelar
-            buttonCancelarEdicion.setOnClickListener(v -> {Navigation.findNavController(v).navigateUp();});
+        buttonCancelarEdicion.setOnClickListener(v -> Navigation.findNavController(v).navigateUp());
 
-        // Configurar el botón elegir fecha
+        // Configurar el campo de fecha de caducidad para mostrar un calendario
         editCaducidad.setOnClickListener(v -> showDatePicker());
 
         // Obtener los datos pasados al fragmento
         if (getArguments() != null) {
+            // ID del documento
+            docId = getArguments().getString("docId");
+            idUsuario = getArguments().getString("idUsuario");
             String nombre = getArguments().getString("nombre");
             boolean conReceta = getArguments().getBoolean("conReceta");
             String fechaCaducidad = getArguments().getString("fechaCaducidad");
@@ -55,6 +63,39 @@ public class EditarMedicamentoFragment extends Fragment {
             editCaducidad.setText(fechaCaducidad);
             editCantidad.setText(String.valueOf(cantidad));
         }
+
+        // Configurar el botón de guardar
+        buttonGuardarEdicion.setOnClickListener(v -> {
+            String nombre = editNombre.getText().toString();
+            boolean conReceta = switchReceta.isChecked();
+            String fechaCaducidad = editCaducidad.getText().toString();
+            String cantidadStr = editCantidad.getText().toString();
+
+            // Verificar que todos los campos sean obligatorios
+            if (nombre.isEmpty() || fechaCaducidad.isEmpty() || cantidadStr.isEmpty()) {
+                Toast.makeText(getContext(), "Todos los campos son obligatorios", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            int cantidadDosis;
+            try {
+                cantidadDosis = Integer.parseInt(cantidadStr);
+            } catch (NumberFormatException e) {
+                Toast.makeText(getContext(), "Cantidad debe ser un número válido", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Llamar al método EditarMedicamento en MainActivity
+            ((MainActivity) requireActivity()).EditarMedicamento(docId, idUsuario, nombre, conReceta, fechaCaducidad, cantidadDosis);
+        });
+
+        // Configurar el botón de borrar
+        buttonBorrarMed.setOnClickListener(v -> {
+            if (docId != null) {
+                // Llamar al método BorrarMedicamento en MainActivity
+                ((MainActivity) requireActivity()).BorrarMedicamento(docId, v);
+            }
+        });
 
         return view;
     }
@@ -69,11 +110,12 @@ public class EditarMedicamentoFragment extends Fragment {
                 getContext(),
                 (view, year1, month1, dayOfMonth) -> {
                     calendar.set(year1, month1, dayOfMonth);
-                        editCaducidad.setText(dayOfMonth + "/" + (month1 + 1) + "/" + year1);
+                    editCaducidad.setText(dayOfMonth + "/" + (month1 + 1) + "/" + year1);
                 },
                 year, month, day
         );
-        //Aqui se establece que la fecha minima que pueda selecionar sea la actual
+
+        // Establecer que la fecha mínima que se pueda seleccionar sea la actual
         datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
         datePickerDialog.show();
     }

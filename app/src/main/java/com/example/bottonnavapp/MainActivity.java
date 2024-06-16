@@ -22,6 +22,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.bottonnavapp.databinding.ActivityMainBinding;
+import com.example.bottonnavapp.ui.notifications.NotificationsFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -111,7 +112,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //CONSEJOS CON CHATGPT EN DASHBOARDFRAGMENT
-    //FUNCIONES DE MI BOTIQUIN EN HOMEFRAGMENT
+
+    /**
+     * CRUD DE MEDICAMENTO
+     * */
 
     //CREATE
     public void CrearMedicamento(View view){
@@ -183,13 +187,51 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //UPDATE
-    public void EditarMedicamento(View view){
-    //Codigo para guardar la edicion de medicamento
+    public void EditarMedicamento(String docId, String idUsuario, String nombre, boolean conReceta, String fechaCaducidad, int cantidadDosis) {
+        Map<String, Object> medicamento = new HashMap<>();
+        medicamento.put("IdUsuario", idUsuario);
+        medicamento.put("NombreMedicamento", nombre);
+        medicamento.put("ConReceta", conReceta);
+        medicamento.put("FechaCaducidad", fechaCaducidad);
+        medicamento.put("CantidadDosis", cantidadDosis);
+
+        db.collection("Botiquin").document(docId)
+                .update(medicamento)
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("MainActivity", "Documento actualizado con éxito!");
+                    // Navegar de vuelta a HomeFragment
+                    getSupportFragmentManager().popBackStack();
+                })
+                .addOnFailureListener(e -> Log.w("MainActivity", "Error actualizando el documento", e));
     }
 
     //DELETE
-    public void BorrarMedicamento(View view){
+    public void BorrarMedicamento(String documentId, View view) {
 
+        new AlertDialog.Builder(this)
+                .setTitle("Borrar medicamento")
+                .setMessage("¿Estás seguro de que quieres borrar el medicamento?")
+                .setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+                        // Borrar el documento con el ID proporcionado
+                        db.collection("Botiquin").document(documentId)
+                                .delete()
+                                .addOnSuccessListener(aVoid -> {
+                                    Log.d(TAG, "Documento borrado exitosamente!");
+                                    // Navegar de vuelta a HomeFragment después de borrar
+                                    getSupportFragmentManager().popBackStack();
+                                    Toast.makeText(view.getContext(), "Medicamento borrado", Toast.LENGTH_SHORT).show();
+                                })
+                                .addOnFailureListener(e -> {
+                                    Log.w(TAG, "Error borrando el documento", e);
+                                    Toast.makeText(view.getContext(), "Error al borrar el medicamento", Toast.LENGTH_SHORT).show();
+                                });
+                    }
+                })
+                .setNegativeButton("No", null)
+                .show();
     }
 
     /**
@@ -359,71 +401,74 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-    public void GuardarPerfil(View view){
-
+    public void GuardarPerfil(View view) {
         EditText Phone = findViewById(R.id.TelefonoUpdateProfile);
         EditText Nombre = findViewById(R.id.EmailRegister);
-        String IdUsuario= Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
+        String IdUsuario = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
         String NombreUser;
         String PhoneUser;
 
-        if (Phone.getText().toString().isEmpty() && Nombre.getText().toString().isEmpty()){
-            Toast.makeText(view.getContext(), "Los campos están vacíos", Toast.LENGTH_SHORT).show();
-        } else{
-            if (Phone.getText().toString().isEmpty()){
-                NombreUser = Nombre.getText().toString();
-                PhoneUser = Phone.getHint().toString();
-            } else if (Nombre.getText().toString().isEmpty()){
-                NombreUser = Nombre.getHint().toString();
-                PhoneUser = Phone.getText().toString();
-            } else {
-                NombreUser = Nombre.getText().toString();
-                PhoneUser = Phone.getText().toString();
-            }
-
-            final Map<String, Object> perfil = new HashMap<>();
-            perfil.put("IdUsuario", IdUsuario);
-            perfil.put("Nombre", NombreUser);
-            perfil.put("Telefono", PhoneUser);
-
-            // Verificar si el documento ya existe
-            db.collection("DatosUser").document(IdUsuario).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot document = task.getResult();
-                        if (document.exists()) {
-                            // El documento existe, actualizarlo
-                            db.collection("DatosUser").document(IdUsuario).update(perfil)
-                                    .addOnSuccessListener(aVoid -> {
-                                        Log.d(TAG, "Documento actualizado con éxito.");
-                                        Toast.makeText(view.getContext(), "Perfil actualizado", Toast.LENGTH_SHORT).show();
-                                    })
-                                    .addOnFailureListener(e -> {
-                                        Log.w(TAG, "Error al actualizar el documento", e);
-                                        Toast.makeText(view.getContext(), "Error al actualizar perfil", Toast.LENGTH_SHORT).show();
-                                    });
-                        } else {
-                            // El documento no existe, crearlo
-                            db.collection("DatosUser").document(IdUsuario).set(perfil)
-                                    .addOnSuccessListener(aVoid -> {
-                                        Log.d(TAG, "Documento creado con éxito.");
-                                        Toast.makeText(view.getContext(), "Perfil creado", Toast.LENGTH_SHORT).show();
-                                    })
-                                    .addOnFailureListener(e -> {
-                                        Log.w(TAG, "Error al crear el documento", e);
-                                        Toast.makeText(view.getContext(), "Error al crear perfil", Toast.LENGTH_SHORT).show();
-                                    });
-                        }
-                    } else {
-                        Log.d(TAG, "Error al obtener el documento: ", task.getException());
-                        Toast.makeText(view.getContext(), "Error al verificar perfil", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
-
-            setContentView(binding.getRoot());
+        // Si el campo de teléfono no está vacío, validar su formato
+        String phoneText = Phone.getText().toString();
+        if (!phoneText.isEmpty() && !phoneText.matches("\\d{9}")) {
+            Toast.makeText(view.getContext(), "El número de teléfono debe tener exactamente 9 dígitos", Toast.LENGTH_SHORT).show();
+            return;
         }
+
+        // Obtener valores de NombreUser y PhoneUser, utilizando hint si el campo está vacío
+        NombreUser = Nombre.getText().toString().isEmpty() ? Nombre.getHint().toString() : Nombre.getText().toString();
+        PhoneUser = Phone.getText().toString().isEmpty() ? Phone.getHint().toString() : Phone.getText().toString();
+
+        final Map<String, Object> perfil = new HashMap<>();
+        perfil.put("IdUsuario", IdUsuario);
+        perfil.put("Nombre", NombreUser);
+        perfil.put("Telefono", PhoneUser);
+
+        // Verificar si el documento ya existe
+        db.collection("DatosUser").document(IdUsuario).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        // El documento existe, actualizarlo
+                        db.collection("DatosUser").document(IdUsuario).update(perfil)
+                                .addOnSuccessListener(aVoid -> {
+                                    Log.d(TAG, "Documento actualizado con éxito.");
+                                    Toast.makeText(view.getContext(), "Perfil actualizado", Toast.LENGTH_SHORT).show();
+                                    NotificationsFragment fragment = (NotificationsFragment) getSupportFragmentManager().findFragmentById(R.id.navigation_notifications);
+                                    if (fragment != null && fragment.isVisible()) {
+                                        fragment.actualizarDatosPerfil(NombreUser, PhoneUser);
+                                    }
+                                    setContentView(binding.getRoot());
+                                })
+                                .addOnFailureListener(e -> {
+                                    Log.w(TAG, "Error al actualizar el documento", e);
+                                    Toast.makeText(view.getContext(), "Error al actualizar perfil", Toast.LENGTH_SHORT).show();
+                                });
+                    } else {
+                        // El documento no existe, crearlo
+                        db.collection("DatosUser").document(IdUsuario).set(perfil)
+                                .addOnSuccessListener(aVoid -> {
+                                    Log.d(TAG, "Documento creado con éxito.");
+                                    Toast.makeText(view.getContext(), "Perfil creado", Toast.LENGTH_SHORT).show();
+                                    NotificationsFragment fragment = (NotificationsFragment) getSupportFragmentManager().findFragmentById(R.id.navigation_notifications);
+                                    if (fragment != null && fragment.isVisible()) {
+                                        fragment.actualizarDatosPerfil(NombreUser, PhoneUser);
+                                    }
+                                    setContentView(binding.getRoot());
+                                })
+                                .addOnFailureListener(e -> {
+                                    Log.w(TAG, "Error al crear el documento", e);
+                                    Toast.makeText(view.getContext(), "Error al crear perfil", Toast.LENGTH_SHORT).show();
+                                });
+                    }
+                } else {
+                    Log.d(TAG, "Error al obtener el documento: ", task.getException());
+                    Toast.makeText(view.getContext(), "Error al verificar perfil", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     //DELETE

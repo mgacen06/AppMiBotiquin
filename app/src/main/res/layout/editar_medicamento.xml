@@ -126,4 +126,14 @@
         tools:checked="true"
         tools:ignore="UseSwitchCompatOrMaterialXml" />
 
+    <!-- Añadir el botón de borrar medicamento -->
+    <Button
+        android:id="@+id/buttonBorrarMed"
+        android:layout_width="150dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="25dp"
+        android:text="Borrar medicamento"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonCancelarEdicion" />
 </androidx.constraintlayout.widget.ConstraintLayout>

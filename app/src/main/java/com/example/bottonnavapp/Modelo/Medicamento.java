@@ -7,6 +7,8 @@ public class Medicamento {
     private boolean ConReceta;
     private String FechaCaducidad;
     private int CantidadDosis;
+    // Añadir un campo para el ID del documento
+    private String id;
 
 
 
@@ -60,5 +62,13 @@ public class Medicamento {
 
     public void setIdUsuario(String idUsuario) {
         IdUsuario = idUsuario;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

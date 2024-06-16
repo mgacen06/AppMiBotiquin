@@ -11,7 +11,7 @@
         android:id="@+id/Cerrar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="25dp"
         android:onClick="CerrarSesion"
         android:text="@string/cerrar_sesion"
         app:layout_constraintEnd_toEndOf="parent"
@@ -22,35 +22,88 @@
         android:id="@+id/EditarPerfil"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="25dp"
         android:onClick="EditarPerfil"
         android:text="@string/editar_perfil"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageButton" />
+        app:layout_constraintTop_toBottomOf="@+id/TelefonoPerfil" />
 
     <Button
         android:id="@+id/Borrar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="25dp"
         android:onClick="BorrarUsuario"
         android:text="@string/borrar_cuenta"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/Cerrar" />
 
-    <ImageButton
-        android:id="@+id/imageButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        android:backgroundTint="@color/DarkBackgroundColor"
-        android:contentDescription="@string/editarperfil"
-        android:foregroundTint="#FFFFFF"
-        android:src="@drawable/profile_perfil"
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="78dp"
+        android:layout_height="80dp"
+        android:contentDescription="@string/logo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/logo" />
+
+    <TextView
+        android:id="@+id/NombrePerfil"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="30dp"
+        android:text="@string/nombre"
+        android:textColor="@color/DarkFontColor"
+        android:textSize="25sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+    <!-- Campo para mostrar el nombre del perfil -->
+    <EditText
+        android:id="@+id/nombrePerfilDatos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="60dp"
+        android:background="@null"
+        android:focusable="false"
+        android:inputType="none"
+        android:textColor="@color/DarkFontColor"
+        android:textSize="21sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/NombrePerfil"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+    <TextView
+        android:id="@+id/TelefonoPerfil"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="25dp"
+        android:text="@string/telefono"
+        android:textColor="@color/DarkFontColor"
+        android:textSize="25sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/NombrePerfil" />
+
+    <!-- Campo para mostrar el teléfono del perfil -->
+    <EditText
+        android:id="@+id/telefonoPerfilDatos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="60dp"
+        android:background="@null"
+        android:focusable="false"
+        android:inputType="none"
+        android:textColor="@color/DarkFontColor"
+        android:textSize="21sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/TelefonoPerfil"
+        app:layout_constraintTop_toBottomOf="@+id/nombrePerfilDatos" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
